@@ -29,13 +29,13 @@ protoEnum = do
     else do
       whitespace
       _ <- char '}'
-      -- TODO: check enum values for correctness (numbers and names)
+      -- TODO: check enum values for correctness (numbers and names) -> in extra function traversing finished proto data
       return (Protobuf.Enum name (catMaybes values))
 
 enumField :: Parser (Maybe EnumField)
 enumField = do
   skipMany space
-  isEnd <- option False (try (lookAhead (char '}')) >> return True)
+  isEnd <- option False (lookAhead (char '}') >> return True)
   if isEnd
     then return Nothing
     else do
@@ -70,7 +70,7 @@ enumOption = do
 enumReserved :: Parser (Maybe EnumField)
 enumReserved = do
   whitespace
-  reservedValues <- (reservedNames `sepBy1` char ',') <|> (reservedNumbers `sepBy1` char ',')
+  reservedValues <- (try reservedNames <|> try reservedNumbers) `sepEndBy` char ','
   isParsedCorrect <- option True (try (lookAhead enumNumber) >> return False) <|> (try (lookAhead protoName) >> return False)
   if not isParsedCorrect
     then fail "Expected either numbers or names, end of enum or separator"
@@ -101,43 +101,31 @@ enumReserved = do
 
 reservedNames :: Parser EnumReservedValues
 reservedNames = do
-  isEnd <- option False ((try (lookAhead (char ';')) >> return True) <|> (try (lookAhead eof) >> return True))
-  if isEnd
-    then return (Names [])
-    else do
-      _ <- many space
-      _ <- char '\"'
-      name <- protoName
-      _ <- char '\"'
-      return (Names [name])
+  _ <- many space
+  _ <- char '\"'
+  name <- protoName
+  _ <- char '\"'
+  return (Names [name])
+
+reservedNumbersSingle :: Parser EnumReservedValues
+reservedNumbersSingle = do
+  _ <- many space
+  firstNumber <- enumNumber
+  _ <- many space
+  return (Numbers [firstNumber])
+
+reservedNumbersRange :: Parser EnumReservedValues
+reservedNumbersRange = do
+  let numValues = try enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)
+  firstNumber <- numValues
+  _ <- many space
+  _ <- string "to"
+  _ <- many space
+  secondNumber <- numValues
+  return (Numbers [firstNumber .. secondNumber])
 
 reservedNumbers :: Parser EnumReservedValues
-reservedNumbers = do
-  -- TODO: min only works with 'to' ranges ! now it works with all of them
-  let numValue = try enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF) -- TODO: use bound
-      endLookAhead = option False ((try (lookAhead (char ';')) >> return True) <|> (try (lookAhead eof) >> return True))
-  -- TODO: notFollowedBy
-  isEnd <- endLookAhead
-  if isEnd
-    then return (Numbers [])
-    else do
-      skipMany space
-      firstNumber <- numValue
-      skipMany space
-      isEnd' <- endLookAhead
-      if isEnd'
-        then return (Numbers [firstNumber])
-        else do
-          isRange <- option False (try (lookAhead (string "to") >> return True) <?> "'to' keyword or ','")
-          if isRange
-            then do
-              skipMany space
-              _ <- string "to"
-              skipMany space
-              secondNumber <- numValue
-              return (Numbers [firstNumber .. secondNumber])
-            else do
-              return (Numbers [firstNumber])
+reservedNumbers = try reservedNumbersRange <|> try reservedNumbersSingle
 
 enumNumber :: Parser EnumNumber
 enumNumber =
