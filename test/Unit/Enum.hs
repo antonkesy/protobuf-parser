@@ -1,7 +1,7 @@
 module Unit.Enum (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser
+import ProtoParser.Enum
 import Protobuf
 import Test.HUnit
 import Text.Parsec (parse)
@@ -10,7 +10,8 @@ allTests :: [Test]
 allTests =
   [ TestLabel "enumFieldParser" testEnumFieldParser,
     TestLabel "enumParser" testEnumParser,
-    TestLabel "reservedNumbers" testReservedNumbers
+    TestLabel "reservedNumbers" testReservedNumbers,
+    TestLabel "fieldNumbers" testEnumFieldNumbers 
   ]
 
 ----------------------------------------------------------------
@@ -84,3 +85,13 @@ testEnumParser = TestCase $ do
 --     (string_name) = "display_value"
 --   ];
 -- }
+
+testEnumFieldNumbers :: Test
+testEnumFieldNumbers = TestCase $ do
+  assertEqual "belowMin" False (isRight (parse enumNumber "" "-1"))
+  assertEqual "min" 0 (fromRight 1 (parse enumNumber "" "0"))
+  assertEqual "max" 0xFFFFFFFF (fromRight 0 (parse enumNumber "" "4294967295"))
+
+-- TODO: not correct number
+-- assertEqual "aboveMax" (False) (isRight (parse enumNumber "" "4294967296"))
+----------------------------------------------------------------

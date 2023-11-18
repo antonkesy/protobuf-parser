@@ -1,4 +1,11 @@
-module ProtoParser.Misc (whitespace, protoName, protoNumber) where
+module ProtoParser.Misc
+  ( whitespace,
+    protoName,
+    protoNumber,
+    spaces1,
+    eol,
+  )
+where
 
 import Control.Monad (void)
 import Protobuf
@@ -7,6 +14,11 @@ import Text.Parsec.String
 
 whitespace :: Parser ()
 whitespace = void (many (oneOf " \n\t")) <?> "whitespace"
+
+----------------------------------------------------------------
+
+spaces1 :: Parser ()
+spaces1 = skipMany1 space
 
 ----------------------------------------------------------------
 
@@ -31,3 +43,9 @@ protoNumber =
             if n >= 1 && n <= 536870911 -- Range from 1 to 536,870,911
               then return n
               else fail "number out of range"
+
+----------------------------------------------------------------
+
+-- TODO : test
+eol :: Parser ()
+eol = void (char '\n') <|> eof

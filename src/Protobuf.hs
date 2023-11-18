@@ -18,6 +18,10 @@ type EnumName = String
 
 type RPCName = String
 
+type ImportPath = String
+
+type Comment = String
+
 data IntType
   = Int32
   | Int64
@@ -80,7 +84,7 @@ data Option = Option Name Value
 
 data Protobuf = Protobuf
   { package :: String,
-    imports :: [String],
+    imports :: [ImportPath],
     options :: [Option],
     enums :: [Protobuf.Enum],
     messages :: [Message],

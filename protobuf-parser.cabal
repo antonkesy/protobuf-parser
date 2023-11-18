@@ -27,7 +27,9 @@ library
   exposed-modules:
       Protobuf
       ProtoParser
+      ProtoParser.Comment
       ProtoParser.Enum
+      ProtoParser.Import
       ProtoParser.Misc
   other-modules:
       Paths_protobuf_parser
@@ -60,8 +62,11 @@ test-suite protobuf-parser-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Unit.Comment
       Unit.Enum
+      Unit.Import
       Unit.Misc
+      Unit.ProtoParser
       Paths_protobuf_parser
   autogen-modules:
       Paths_protobuf_parser

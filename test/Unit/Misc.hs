@@ -1,14 +1,13 @@
 module Unit.Misc (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser
+import ProtoParser.Misc
 import Test.HUnit
 import Text.Parsec (parse)
 
 allTests :: [Test]
 allTests =
   [ TestLabel "numberParser" testNumberParser,
-    TestLabel "enumNumberParser" testEnumNumberParser,
     TestLabel "protoName" testProtoName
   ]
 
@@ -38,13 +37,4 @@ testProtoName = TestCase $ do
   assertEqual "Uppercase" "TEST" (fromRight "Default" (parse protoName "" "TEST"))
   assertEqual "UpperCamelCase" "TestTest" (fromRight "Default" (parse protoName "" "TestTest"))
 
-----------------------------------------------------------------
-testEnumNumberParser :: Test
-testEnumNumberParser = TestCase $ do
-  assertEqual "belowMin" False (isRight (parse enumNumber "" "-1"))
-  assertEqual "min" 0 (fromRight 1 (parse enumNumber "" "0"))
-  assertEqual "max" 0xFFFFFFFF (fromRight 0 (parse enumNumber "" "4294967295"))
-
--- TODO: not correct number
--- assertEqual "aboveMax" (False) (isRight (parse enumNumber "" "4294967296"))
 ----------------------------------------------------------------
