@@ -22,6 +22,8 @@ type ImportPath = String
 
 type Comment = String
 
+type Package = String
+
 data IntType
   = Int32
   | Int64

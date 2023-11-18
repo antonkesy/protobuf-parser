@@ -30,7 +30,9 @@ library
       ProtoParser.Comment
       ProtoParser.Enum
       ProtoParser.Import
+      ProtoParser.Message
       ProtoParser.Misc
+      ProtoParser.Package
   other-modules:
       Paths_protobuf_parser
   autogen-modules:
@@ -65,7 +67,9 @@ test-suite protobuf-parser-test
       Unit.Comment
       Unit.Enum
       Unit.Import
+      Unit.Message
       Unit.Misc
+      Unit.Package
       Unit.ProtoParser
       Paths_protobuf_parser
   autogen-modules:

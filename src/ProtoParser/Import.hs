@@ -14,7 +14,7 @@ parseImport = do
   _ <- string "import" <?> "Expected import keyword"
   spaces1
   _ <- char '"' <?> "Expected '\"' after import keyword"
-  path <- anyChar `manyTill` (string (pathExtension ++ "\""))
+  path <- anyChar `manyTill` string (pathExtension ++ "\"")
   spaces
   _ <- char ';' <?> "Expected ';' at end of import statement"
   return (path ++ pathExtension)
