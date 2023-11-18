@@ -1,10 +1,33 @@
 module ProtoParser.Message (parseMessage) where
 
-import ProtoParser.Misc (spaces1)
-import Protobuf (Message (..), MessageField)
+import Data.Maybe (catMaybes)
+import ProtoParser.Misc
+import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
 parseMessage :: Parser Message
 parseMessage = do
-  return (Message " " [])
+  parseMessage'
+
+parseMessage' :: Parser Message
+parseMessage' = do
+  _ <- string "message"
+  spaces1
+  name <- protoName
+  spaces
+  _ <- char '{'
+  spaces
+  -- TODO: multiple inputs
+  fields <- parseMessageField `sepEndBy1` char ';'
+  spaces
+  _ <- char '}'
+  return (Message name (catMaybes fields))
+
+parseMessageField :: Parser (Maybe MessageField)
+parseMessageField = do
+  return Nothing
+
+-- return (Just (MessageField t "" 0 False))
+-- t :: ProtoDataType
+-- t = return MessageName ""

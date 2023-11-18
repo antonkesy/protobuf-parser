@@ -54,7 +54,7 @@ data MapValue = MapName | ProtonScalarType
 data ProtoDataType = ProtoScalarType | MessageName | EnumName | Map MapKey MapValue
   deriving (Show, Eq)
 
-data MessageField = ProtoField ProtoDataType Name FieldNumber Repeat
+data MessageField = MessageField ProtoDataType Name FieldNumber Repeat
   deriving (Show, Eq)
 
 data Message = Message MessageName [MessageField]
