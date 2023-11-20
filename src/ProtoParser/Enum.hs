@@ -7,7 +7,6 @@ module ProtoParser.Enum
   )
 where
 
-import Data.Maybe (catMaybes)
 import Debug.Trace
 import ProtoParser.Misc
 import Protobuf
@@ -16,105 +15,84 @@ import Text.Parsec.String
 
 protoEnum :: Parser Protobuf.Enum
 protoEnum = do
-  skipMany space
+  spaces
   _ <- string "enum" <?> "Expected enum keyword"
-  skipMany space
+  spaces
   name <- protoName <?> "Expected enum name"
-  whitespace
+  spaces
   _ <- char '{' <?> ("Expected '{' after enum name" ++ name)
-  skipMany space
-  values <- enumField `sepEndBy1` char ';'
-  if null (catMaybes values)
-    then fail "Expected at least one enum value"
-    else do
-      whitespace
-      _ <- char '}'
-      -- TODO: check enum values for correctness (numbers and names) -> in extra function traversing finished proto data
-      return (Protobuf.Enum name (catMaybes values))
+  spaces
+  values <- try enumField `sepEndBy1` (try (string ";") <|> try (string ";\n")) <?> "Expected at least one enum value"
+  return (Protobuf.Enum name values)
 
-enumField :: Parser (Maybe EnumField)
+enumField :: Parser EnumField
 enumField = do
-  skipMany space
-  isEnd <- option False (lookAhead (char '}') >> return True)
-  if isEnd
-    then return Nothing
-    else do
-      name <- protoName
-      case name of
-        "option" -> do enumOption
-        "reserved" -> do enumReserved
-        _ -> do
-          skipMany space
-          _ <- char '='
-          skipMany space
-          number <- enumNumber
-          skipMany space
-          return (Just (EnumValue name number))
+  spaces
+  name <- protoName
+  case name of
+    "option" -> do enumOption
+    "reserved" -> do enumReserved
+    _ -> do
+      spaces -- TODO: 1 space required?
+      _ <- char '='
+      spaces -- TODO: 1 space required?
+      number <- enumNumber
+      spaces
+      return (EnumValue name number)
 
 -- https://protobuf.dev/programming-guides/proto3/#enum
-enumOption :: Parser (Maybe EnumField)
+enumOption :: Parser EnumField
 enumOption = do
-  whitespace
+  spaces
   optionName <- protoName
   case optionName of
     "allow_alias" -> do
-      whitespace
+      spaces
       _ <- char '='
-      whitespace
-      active <- try (string "true" >> return True) <|> (string "false" >> return False) <?> "Expected true or false"
-      whitespace
-      return (Just (EnumOption "allow_alias" active))
+      spaces
+      active <- parseBoolOption
+      spaces
+      return (EnumOption "allow_alias" active)
     _ -> fail "Unknown option"
 
--- https://protobuf.dev/programming-guides/proto3/#reserved
-enumReserved :: Parser (Maybe EnumField)
-enumReserved = do
-  whitespace
-  reservedValues <- (try reservedNames <|> try reservedNumbers) `sepEndBy` char ','
-  isParsedCorrect <- option True (try (lookAhead enumNumber) >> return False) <|> (try (lookAhead protoName) >> return False)
-  if not isParsedCorrect
-    then fail "Expected either numbers or names, end of enum or separator"
-    else case reservedValues of
-      [] -> fail "Expected at least one reserved value (either number or name)"
-      _ -> do
-        let numbers =
-              [ case x of
-                  Numbers l -> l
-                  _ -> []
-                | x <- reservedValues
-              ]
-            names =
-              [ case x of
-                  Names n -> n
-                  _ -> []
-                | x <- reservedValues
-              ]
-        if not (all null names) && not (all null numbers)
-          then fail "Expected either numbers or names, not both"
-          else
-            if all null numbers
-              then
-                if all null names
-                  then fail "Expected either numbers or names"
-                  else return (Just (EnumReserved (Names (concat names))))
-              else return (Just (EnumReserved (Numbers (concat numbers))))
+parseBoolOption :: Parser Bool
+parseBoolOption =
+  try (string "true" >> return True)
+    <|> (string "false" >> return False)
+    <?> "Expected true or false"
 
-reservedNames :: Parser EnumReservedValues
+-- https://protobuf.dev/programming-guides/proto3/#reserved
+enumReserved :: Parser EnumField
+enumReserved = do
+  spaces
+  try parseReservedNames <|> try parseReservedNumbers
+
+parseReservedNames :: Parser EnumField
+parseReservedNames = do
+  names <- try reservedNames `sepEndBy1` char ','
+  return (EnumReserved (Names (concat names)))
+
+parseReservedNumbers :: Parser EnumField
+parseReservedNumbers = do
+  numbers <- try reservedNumbers `sepEndBy1` char ','
+  return (EnumReserved (Numbers (concat numbers)))
+
+reservedNames :: Parser [EnumName]
 reservedNames = do
   _ <- many space
   _ <- char '\"'
   name <- protoName
   _ <- char '\"'
-  return (Names [name])
+  return [name]
 
-reservedNumbersSingle :: Parser EnumReservedValues
+reservedNumbersSingle :: Parser [EnumNumber]
 reservedNumbersSingle = do
   _ <- many space
   firstNumber <- enumNumber
   _ <- many space
-  return (Numbers [firstNumber])
+  return [firstNumber]
 
-reservedNumbersRange :: Parser EnumReservedValues
+reservedNumbersRange :: Parser [EnumNumber]
 reservedNumbersRange = do
   let numValues = try enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)
   firstNumber <- numValues
@@ -122,9 +100,9 @@ reservedNumbersRange = do
   _ <- string "to"
   _ <- many space
   secondNumber <- numValues
-  return (Numbers [firstNumber .. secondNumber])
+  return [firstNumber .. secondNumber]
 
-reservedNumbers :: Parser EnumReservedValues
+reservedNumbers :: Parser [EnumNumber]
 reservedNumbers = try reservedNumbersRange <|> try reservedNumbersSingle
 
 enumNumber :: Parser EnumNumber

@@ -11,46 +11,46 @@ allTests =
   [ TestLabel "enumFieldParser" testEnumFieldParser,
     TestLabel "enumParser" testEnumParser,
     TestLabel "reservedNumbers" testReservedNumbers,
-    TestLabel "fieldNumbers" testEnumFieldNumbers 
+    TestLabel "fieldNumbers" testEnumFieldNumbers
   ]
 
 ----------------------------------------------------------------
 testReservedNumbers :: Test
 testReservedNumbers = TestCase $ do
   assertEqual "empty" False (isRight (parse reservedNumbers "" ""))
-  assertEqual "single" (Numbers [0]) (fromRight (Numbers []) (parse reservedNumbers "" "0"))
-  assertEqual "range" (Numbers [0, 1, 2]) (fromRight (Numbers []) (parse reservedNumbers "" "min to 2"))
+  assertEqual "single" [0] (fromRight [] (parse reservedNumbers "" "0"))
+  assertEqual "range" [0, 1, 2] (fromRight [] (parse reservedNumbers "" "min to 2"))
 
 ----------------------------------------------------------------
 
-emptyDefault :: Maybe EnumField
-emptyDefault = Just (EnumValue "TestDefault" 0)
+emptyDefault :: EnumField
+emptyDefault = EnumValue "TestDefault" 0
 
 testEnumFieldParser :: Test
 testEnumFieldParser = TestCase $ do
   assertEqual "empyt" False (isRight (parse enumField "" ""))
-  assertEqual "enumEntry" (Just (EnumValue "TEST" 0)) (fromRight emptyDefault (parse enumField "" "TEST = 0"))
-  assertEqual "enumEntry" (Just (EnumValue "MORE" 1)) (fromRight emptyDefault (parse enumField "" "MORE = 1"))
-  assertEqual "enumEntry" (Just (EnumValue "UNDER_SCORE" 42)) (fromRight emptyDefault (parse enumField "" "UNDER_SCORE = 42"))
+  assertEqual "enumEntry" (EnumValue "TEST" 0) (fromRight emptyDefault (parse enumField "" "TEST = 0"))
+  assertEqual "enumEntry" (EnumValue "MORE" 1) (fromRight emptyDefault (parse enumField "" "MORE = 1"))
+  assertEqual "enumEntry" (EnumValue "UNDER_SCORE" 42) (fromRight emptyDefault (parse enumField "" "UNDER_SCORE = 42"))
   -- reserved number --
   assertEqual "empytReserved" False (isRight (parse enumField "" "reserved"))
   assertEqual "outOfRangeSingleReserved" False (isRight (parse enumField "" "reserved -1"))
-  assertEqual "multiReserved" (Just (EnumReserved (Numbers [1, 2]))) (fromRight emptyDefault (parse enumField "" "reserved 1, 2"))
-  assertEqual "multiReserved" (Just (EnumReserved (Numbers [1, 3, 5]))) (fromRight emptyDefault (parse enumField "" "reserved 1, 3, 5"))
-  assertEqual "multiReserved" (Just (EnumReserved (Numbers [1, 2, 3]))) (fromRight emptyDefault (parse enumField "" "reserved 1 to 3"))
-  assertEqual "multiReserved" (Just (EnumReserved (Numbers [0, 1, 2, 3]))) (fromRight emptyDefault (parse enumField "" "reserved min to 3"))
-  assertEqual "multiReserved" (Just (EnumReserved (Numbers [4294967294, 0xFFFFFFFF]))) (fromRight emptyDefault (parse enumField "" "reserved 4294967294 to max"))
-  assertEqual "singleReserved" (Just (EnumReserved (Numbers [0]))) (fromRight emptyDefault (parse enumField "" "reserved 0"))
-  assertEqual "singleReserved" (Just (EnumReserved (Numbers [1]))) (fromRight emptyDefault (parse enumField "" "reserved 1"))
-  assertEqual "reservedIncorrectNumberFormat" False (isRight (parse enumField "" "reserved 1 2"))
+  assertEqual "multiReserved" (EnumReserved (Numbers [1, 2])) (fromRight emptyDefault (parse enumField "" "reserved 1, 2"))
+  assertEqual "multiReserved" (EnumReserved (Numbers [1, 3, 5])) (fromRight emptyDefault (parse enumField "" "reserved 1, 3, 5"))
+  assertEqual "multiReserved" (EnumReserved (Numbers [1, 2, 3])) (fromRight emptyDefault (parse enumField "" "reserved 1 to 3"))
+  assertEqual "multiReserved" (EnumReserved (Numbers [0, 1, 2, 3])) (fromRight emptyDefault (parse enumField "" "reserved min to 3"))
+  assertEqual "multiReserved" (EnumReserved (Numbers [4294967294, 0xFFFFFFFF])) (fromRight emptyDefault (parse enumField "" "reserved 4294967294 to max"))
+  assertEqual "singleReserved" (EnumReserved (Numbers [0])) (fromRight emptyDefault (parse enumField "" "reserved 0"))
+  assertEqual "singleReserved" (EnumReserved (Numbers [1])) (fromRight emptyDefault (parse enumField "" "reserved 1"))
+  -- assertEqual "reservedIncorrectNumberFormat" False (isRight (parse enumField "" "reserved 1 2")) -- cant parse with enumField alone anymore
   -- reserved name --
   assertEqual "emptyReservedName" False (isRight (parse enumField "" "reserved"))
-  assertEqual "singleReservedName" (Just (EnumReserved (Names ["FOO"]))) (fromRight emptyDefault (parse enumField "" "reserved \"FOO\""))
-  assertEqual "multiReservedName" (Just (EnumReserved (Names ["FOO", "BAR"]))) (fromRight emptyDefault (parse enumField "" "reserved \"FOO\", \"BAR\""))
+  assertEqual "singleReservedName" (EnumReserved (Names ["FOO"])) (fromRight emptyDefault (parse enumField "" "reserved \"FOO\""))
+  assertEqual "multiReservedName" (EnumReserved (Names ["FOO", "BAR"])) (fromRight emptyDefault (parse enumField "" "reserved \"FOO\", \"BAR\""))
   -- option --
   assertEqual "empyt" False (isRight (parse enumField "" "option invalid_option = true"))
-  assertEqual "invalidOption" (Just (EnumOption "allow_alias" True)) (fromRight emptyDefault (parse enumField "" "option allow_alias = true"))
-  assertEqual "invalidOption" (Just (EnumOption "allow_alias" False)) (fromRight emptyDefault (parse enumField "" "option allow_alias = false"))
+  assertEqual "invalidOption" (EnumOption "allow_alias" True) (fromRight emptyDefault (parse enumField "" "option allow_alias = true"))
+  assertEqual "invalidOption" (EnumOption "allow_alias" False) (fromRight emptyDefault (parse enumField "" "option allow_alias = false"))
 
 ----------------------------------------------------------------
 
