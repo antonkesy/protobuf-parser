@@ -10,6 +10,7 @@ module ProtoParser
   )
 where
 
+import Debug.Trace
 import ProtoParser.Comment
 import ProtoParser.Enum
 import ProtoParser.Import
@@ -21,21 +22,19 @@ import Text.Parsec
 import Text.Parsec.String
 
 parseProtobuf :: String -> Either ParseError Protobuf
-parseProtobuf = parse parseProtobuf' ""
+parseProtobuf = parse protoValue ""
 
 -- TODO : check for too many ';'
 
-parseProtobuf' :: Parser Protobuf
-parseProtobuf' = do
-  _x <- parseImport
-  -- TODO: how to add multiple parser outputs?
-  return
-    ( Protobuf
-        { package = "",
-          imports = [],
-          options = [],
-          enums = [],
-          messages = [],
-          services = []
-        }
-    )
+protoValue :: Parser Protobuf
+protoValue = do
+  x <-
+    choice
+      [ try parsePackage',
+        try parseImport',
+        try parseComment',
+        try parseEnum',
+        try parseMessage'
+      ]
+      `sepBy1` lookAhead anyToken
+  return (merge' x)

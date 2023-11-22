@@ -1,4 +1,4 @@
-module ProtoParser.Message (parseMessage) where
+module ProtoParser.Message (parseMessage, parseMessage') where
 
 import Data.Maybe (catMaybes)
 import ProtoParser.Misc
@@ -6,12 +6,18 @@ import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
+parseMessage' :: Parser Protobuf
+parseMessage' = do
+  x <- parseMessage
+  return (Protobuf {package = [], imports = [], options = [], enums = [], messages = [x], services = []})
+
 parseMessage :: Parser Message
 parseMessage = do
-  parseMessage'
+  parseMessage''
 
-parseMessage' :: Parser Message
-parseMessage' = do
+parseMessage'' :: Parser Message
+parseMessage'' = do
+  spaces
   _ <- string "message"
   spaces1
   name <- protoName

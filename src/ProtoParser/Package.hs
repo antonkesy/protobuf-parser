@@ -1,9 +1,14 @@
-module ProtoParser.Package (parsePackage) where
+module ProtoParser.Package (parsePackage, parsePackage') where
 
 import ProtoParser.Misc (spaces1)
-import Protobuf (Package)
+import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+
+parsePackage' :: Parser Protobuf
+parsePackage' = do
+  package' <- parsePackage
+  return (Protobuf {package = [package'], imports = [], options = [], enums = [], messages = [], services = []})
 
 parsePackage :: Parser Package
 parsePackage = do

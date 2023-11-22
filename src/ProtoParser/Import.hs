@@ -1,9 +1,14 @@
-module ProtoParser.Import (parseImport) where
+module ProtoParser.Import (parseImport, parseImport') where
 
 import ProtoParser.Misc (spaces1)
-import Protobuf (ImportPath)
+import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+
+parseImport' :: Parser Protobuf
+parseImport' = do
+  imp <- parseImport
+  return (Protobuf {package = [], imports = [imp], options = [], enums = [], messages = [], services = []})
 
 pathExtension :: String
 pathExtension = ".proto"

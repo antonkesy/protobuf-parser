@@ -85,7 +85,8 @@ data Option = Option Name Value
   deriving (Show, Eq)
 
 data Protobuf = Protobuf
-  { package :: String,
+  -- { package :: Maybe String,
+  { package :: [String],
     imports :: [ImportPath],
     options :: [Option],
     enums :: [Protobuf.Enum],
@@ -93,3 +94,19 @@ data Protobuf = Protobuf
     services :: [Service]
   }
   deriving (Show, Eq)
+
+------------------------------------------------------------
+
+merge' :: [Protobuf] -> Protobuf
+merge' = foldl1 Protobuf.merge
+
+merge :: Protobuf -> Protobuf -> Protobuf
+merge a b =
+  Protobuf
+    { package = package a ++ package b,
+      imports = imports a ++ imports b,
+      options = options a ++ options b,
+      enums = enums a ++ enums b,
+      messages = messages a ++ messages b,
+      services = services a ++ services b
+    }
