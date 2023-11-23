@@ -48,7 +48,7 @@ data ScalarType = IntType IntType | FloatType FloatType | String | Bytes | Bool
 data MapKey = StringKey String | IntKey IntType
   deriving (Show, Eq)
 
-data MapValue = MapName | ProtonScalarType
+data MapValue = MapName String | ScalarType
   deriving (Show, Eq)
 
 data ProtoDataType = ProtoScalarType | MessageName | EnumName | Map MapKey MapValue

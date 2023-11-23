@@ -49,7 +49,3 @@ protoNumber =
 -- TODO : test
 eol :: Parser ()
 eol = void (char '\n') <|> eof
-
-----------------------------------------------------------------
-
--- TODO: maps

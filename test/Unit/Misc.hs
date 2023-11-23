@@ -36,5 +36,3 @@ testProtoName = TestCase $ do
   assertEqual "not a name" False (isRight (parse protoName "" "-1"))
   assertEqual "Uppercase" "TEST" (fromRight "Default" (parse protoName "" "TEST"))
   assertEqual "UpperCamelCase" "TestTest" (fromRight "Default" (parse protoName "" "TestTest"))
-
-----------------------------------------------------------------
