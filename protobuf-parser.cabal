@@ -33,6 +33,7 @@ library
       ProtoParser.Import
       ProtoParser.Message
       ProtoParser.Package
+      ProtoParser.Reserved
       ProtoParser.Service
       ProtoParser.Space
       ProtoParser.Type

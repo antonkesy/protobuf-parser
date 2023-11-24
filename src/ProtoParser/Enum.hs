@@ -3,13 +3,15 @@ module ProtoParser.Enum
     parseEnum',
     enumField,
     enumNumber,
+    enumNumberRange,
     protoName,
     reservedNumbers,
   )
 where
 
-import ProtoParser.Type
+import ProtoParser.Reserved
 import ProtoParser.Space (spaces')
+import ProtoParser.Type
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
@@ -71,7 +73,6 @@ parseBoolOption =
     <|> (string "false" >> return False)
     <?> "Expected true or false"
 
--- https://protobuf.dev/programming-guides/proto3/#reserved
 enumReserved :: Parser EnumField
 enumReserved = do
   spaces'
@@ -79,48 +80,26 @@ enumReserved = do
 
 parseReservedNames :: Parser EnumField
 parseReservedNames = do
-  names <- try reservedNames `sepEndBy1` char ','
-  return (EnumReserved (Names (concat names)))
+  names <- reservedNames
+  return (EnumReserved (ReservedEnumNames names))
 
 parseReservedNumbers :: Parser EnumField
 parseReservedNumbers = do
-  numbers <- try reservedNumbers `sepEndBy1` char ','
-  return (EnumReserved (Numbers (concat numbers)))
-
-reservedNames :: Parser [EnumName]
-reservedNames = do
-  _ <- many space
-  _ <- char '\"'
-  name <- protoName
-  _ <- char '\"'
-  return [name]
-
-reservedNumbersSingle :: Parser [EnumNumber]
-reservedNumbersSingle = do
-  _ <- many space
-  firstNumber <- enumNumber
-  _ <- many space
-  return [firstNumber]
-
-reservedNumbersRange :: Parser [EnumNumber]
-reservedNumbersRange = do
-  let numValues = try enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)
-  firstNumber <- numValues
-  _ <- many space
-  _ <- string "to"
-  _ <- many space
-  secondNumber <- numValues
-  return [firstNumber .. secondNumber]
-
-reservedNumbers :: Parser [EnumNumber]
-reservedNumbers = try reservedNumbersRange <|> try reservedNumbersSingle
+  numbers <- try (reservedNumbers enumNumber enumNumberRange) `sepEndBy1` char ','
+  return (EnumReserved (ReservedEnumNumbers (concat numbers)))
 
 enumNumber :: Parser EnumNumber
 enumNumber =
   -- https://protobuf.dev/programming-guides/proto3/#enum
   let val = (read <$> many1 digit)
    in do
+        -- TODO move min/max to here but in seperate parser because cant mix with standalone
         n <- val
-        if n >= (minBound :: FieldNumber) && n <= (maxBound :: FieldNumber)
-          then return (fromIntegral n)
+        if n >= (minBound :: EnumNumber) && n <= (maxBound :: EnumNumber)
+          then return n
           else fail "Number not in valid range"
+
+enumNumberRange :: Parser EnumNumber
+enumNumberRange = do
+  n <- enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)
+  return n

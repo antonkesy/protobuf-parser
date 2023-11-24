@@ -78,3 +78,5 @@ parseMap = do
   spaces'
   fieldNumber <- protoNumber
   return (MessageField (Map key value) name fieldNumber False)
+
+-- TODO: one of

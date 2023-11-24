@@ -54,13 +54,20 @@ data MapValue = MapName String | ScalarType
 data DataType = Scalar ScalarType | Compound Name | Map MapKey MapValue
   deriving (Show, Eq)
 
-data MessageField = MessageField DataType Name FieldNumber Repeat
+data MessageField = MessageField DataType Name FieldNumber Repeat | MessageReserved MessageReservedValues
   deriving (Show, Eq)
 
 data Message = Message MessageName [MessageField]
   deriving (Show, Eq)
 
-data EnumReservedValues = Numbers [EnumNumber] | Names [Name]
+data ReservedNames = ReservedNames [Name]
+  deriving (Show, Eq)
+
+data MessageReservedValues = ReservedMessageNumbers [FieldNumber] | ReservedMessageNames ReservedNames
+  deriving (Show, Eq)
+
+-- TODO: make reserved type generic
+data EnumReservedValues = ReservedEnumNumbers [EnumNumber] | ReservedEnumNames ReservedNames
   deriving (Show, Eq)
 
 data EnumField = EnumValue Name EnumNumber | EnumOption Name Bool | EnumReserved EnumReservedValues
