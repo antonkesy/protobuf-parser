@@ -11,7 +11,7 @@ import Text.Parsec
 import Text.Parsec.String
 
 space' :: Parser ()
-space' = (void space <|> removeComment)
+space' = void space <|> removeComment <|> void newline <|> void tab
 
 spaces' :: Parser ()
 spaces' = skipMany space'

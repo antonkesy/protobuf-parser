@@ -8,6 +8,7 @@ module ProtoParser
     module ProtoParser.Service,
     module ProtoParser.EndOfLine,
     parseProtobuf,
+    parseProtoFile,
   )
 where
 
@@ -20,16 +21,23 @@ import ProtoParser.Package
 import ProtoParser.Service
 import ProtoParser.Type
 import Protobuf
+import System.IO
 import Text.Parsec
 import Text.Parsec.String
 
 parseProtobuf :: String -> Either ParseError Protobuf
 parseProtobuf = parse protoValue ""
 
+parseProtoFile :: FilePath -> IO (Either ParseError Protobuf)
+parseProtoFile filePath = do
+  handle <- openFile filePath ReadMode
+  contents <- hGetContents handle
+  -- hClose handle
+  return (parse protoValue filePath contents)
+
 protoValue :: Parser Protobuf
 protoValue = do
-  x <- (protoValue' emptyProtobuf)
-  return x
+  protoValue' emptyProtobuf
 
 protoValue' :: Protobuf -> Parser Protobuf
 protoValue' old = do
@@ -41,9 +49,9 @@ protoValue' old = do
         try (parseEnum' old),
         try (parseMessage' old)
       ]
-  isEnd <- try ((lookAhead anyToken) >> return False) <|> return True
+  isEnd <- try (lookAhead anyChar >> return False) <|> return True
   if isEnd
-    then return new
+    then do
+      return new
     else do
-      newNew <- protoValue' new
-      return newNew
+      protoValue' new

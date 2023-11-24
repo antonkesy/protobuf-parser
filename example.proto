@@ -1,0 +1,6 @@
+import "foo.proto";
+
+message SearchRequest {
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+}

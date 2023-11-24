@@ -30,10 +30,11 @@ parseMessage'' = do
   spaces'
   _ <- char '{'
   spaces'
-  fields <- parseMessageField `sepEndBy` char ';'
+  fields <- try parseMessageField `sepEndBy` char ';'
   spaces'
   _ <- char '}'
-  return (Message name (fields))
+  spaces'
+  return (Message name fields)
 
 parseMessageField :: Parser MessageField
 parseMessageField = do
