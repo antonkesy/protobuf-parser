@@ -6,6 +6,7 @@ module ProtoParser
     module ProtoParser.Comment,
     module ProtoParser.Message,
     module ProtoParser.Package,
+    module ProtoParser.Service,
     parseProtobuf,
   )
 where
@@ -17,6 +18,7 @@ import ProtoParser.Import
 import ProtoParser.Message
 import ProtoParser.Misc
 import ProtoParser.Package
+import ProtoParser.Service
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String

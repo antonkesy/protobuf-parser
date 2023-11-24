@@ -75,7 +75,7 @@ data Service = Service Name [RPC]
 data RequestType = RequestType MessageName | RequestTypeStream MessageName
   deriving (Show, Eq)
 
-data ReplyType = ReplyType MessageName | ReturnTypeStream MessageName
+data ReplyType = ReplyType MessageName | ReplyTypeStream MessageName
   deriving (Show, Eq)
 
 data RPC = RPC RPCName RequestType ReplyType

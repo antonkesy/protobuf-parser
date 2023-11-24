@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.35.2.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -33,6 +33,7 @@ library
       ProtoParser.Message
       ProtoParser.Misc
       ProtoParser.Package
+      ProtoParser.Service
   other-modules:
       Paths_protobuf_parser
   autogen-modules:
@@ -71,6 +72,7 @@ test-suite protobuf-parser-test
       Unit.Misc
       Unit.Package
       Unit.ProtoParser
+      Unit.Service
       Paths_protobuf_parser
   autogen-modules:
       Paths_protobuf_parser

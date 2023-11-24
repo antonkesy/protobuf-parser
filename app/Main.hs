@@ -4,10 +4,21 @@ import ProtoParser
 import Text.Parsec
 import Text.Parsec.String
 
--- map<key_type, value_type> map_field = N;
+singleServiceText :: String
+singleServiceText =
+  "service SearchService {\n\
+  \  rpc Search(SearchRequest) returns (SearchResponse);\n\
+  \}"
+
+multipleServiceText :: String
+multipleServiceText =
+  "service Multiple {\n\
+  \  rpc Search(Foo) returns (Bar);\n\
+  \  rpc Search1(Bar) returns (Foo);\n\
+  \}"
 
 main :: IO ()
 main = do
-  case parse parseMap "" "map<int32,V> name = 2" of
+  case parse parseService "" multipleServiceText of
     Left err -> print err
     Right res -> print res
