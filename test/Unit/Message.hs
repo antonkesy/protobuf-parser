@@ -30,6 +30,19 @@ testMessage1Proto =
       MessageField (Scalar (FloatType Double)) "bar" 2 False
     ]
 
+testMessageReserved :: String
+testMessageReserved =
+  "message Foo {\
+  \reserved 1, 2;\
+  \}"
+
+testMessageReservedProto :: Message
+testMessageReservedProto =
+  Message
+    "Foo"
+    [ MessageReserved (ReservedMessageNumbers [1, 2])
+    ]
+
 testSimple :: Test
 testSimple = TestCase $ do
   assertEqual "empty" False (isRight (parse parseMessage "" ""))
@@ -37,6 +50,7 @@ testSimple = TestCase $ do
   assertEqual "missing name" False (isRight (parse parseMessage "" "message {}"))
   assertEqual "emptyMessage" (Message "Foo" []) (fromRight failMessage (parse parseMessage "" "message Foo {}"))
   assertEqual "simple" testMessage1Proto (fromRight failMessage (parse parseMessage "" testMessage1))
+  assertEqual "reserved" testMessageReservedProto (fromRight failMessage (parse parseMessage "" testMessageReserved))
 
 ----------------------------------------------------------------
 

@@ -41,6 +41,7 @@ enumField :: Parser EnumField
 enumField = do
   spaces
   name <- protoName
+  -- TODO: exctact to extra parser functions
   case name of
     "option" -> do enumOption
     "reserved" -> do enumReserved
@@ -93,7 +94,6 @@ enumNumber =
   -- https://protobuf.dev/programming-guides/proto3/#enum
   let val = (read <$> many1 digit)
    in do
-        -- TODO move min/max to here but in seperate parser because cant mix with standalone
         n <- val
         if n >= (minBound :: EnumNumber) && n <= (maxBound :: EnumNumber)
           then return n

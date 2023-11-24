@@ -22,10 +22,10 @@ protoNumber =
    in do
         n <- val
         -- 19,000 to 19,999 are reserved for the Protocol Buffers
-        if n >= 19000 && n <= 19999
+        if 19000 <= n && n <= 19999
           then fail "number reserved"
           else
-            if n >= 1 && n <= 536870911 -- Range from 1 to 536,870,911
+            if 1 <= n && n <= 536870911 -- Range from 1 to 536,870,911
               then return n
               else fail "number out of range"
 

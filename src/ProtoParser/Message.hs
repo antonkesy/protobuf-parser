@@ -1,6 +1,6 @@
 module ProtoParser.Message (parseMessage, parseMessage', parseMap) where
 
-import Data.Maybe (catMaybes)
+import ProtoParser.Reserved
 import ProtoParser.Space (spaces', spaces1)
 import ProtoParser.Type
 import Protobuf
@@ -10,6 +10,7 @@ import Text.Parsec.String
 parseMessage' :: Protobuf -> Parser Protobuf
 parseMessage' p = do
   x <- parseMessage
+  -- TODO: check for validity of message?
   return
     ( Protobuf.merge
         p
@@ -32,22 +33,26 @@ parseMessage'' = do
   fields <- parseMessageField `sepEndBy` char ';'
   spaces'
   _ <- char '}'
-  return (Message name (catMaybes fields))
+  return (Message name (fields))
 
-parseMessageField :: Parser (Maybe MessageField)
+parseMessageField :: Parser MessageField
 parseMessageField = do
   spaces'
   -- _ <- try (string "repeated") -- TODO: optional
   -- spaces'
+  -- TODO: extra function parser for reserved to avoid this workaround
   t <- parseDataType
-  spaces'
-  name <- protoName
-  spaces'
-  _ <- char '='
-  spaces'
-  fieldNumber <- protoNumber
-  spaces'
-  return (Just (MessageField t name fieldNumber False))
+  case t of
+    (Compound "reserved") -> do messageReserved
+    _ -> do
+      spaces'
+      name <- protoName
+      spaces'
+      _ <- char '='
+      spaces'
+      fieldNumber <- protoNumber
+      spaces'
+      return (MessageField t name fieldNumber False)
 
 parseDataType :: Parser DataType
 parseDataType =
@@ -80,3 +85,25 @@ parseMap = do
   return (MessageField (Map key value) name fieldNumber False)
 
 -- TODO: one of
+
+----------------------------------------------------------------
+
+messageReserved :: Parser MessageField
+messageReserved = do
+  spaces'
+  try parseReservedNames <|> try parseReservedNumbers
+
+parseReservedNames :: Parser MessageField
+parseReservedNames = do
+  names <- reservedNames
+  return (MessageReserved (ReservedMessageNames names))
+
+parseReservedNumbers :: Parser MessageField
+parseReservedNumbers = do
+  numbers <- try (reservedNumbers protoNumber fieldNumberRange) `sepEndBy1` char ','
+  return (MessageReserved (ReservedMessageNumbers (concat numbers)))
+
+fieldNumberRange :: Parser FieldNumber
+fieldNumberRange = do
+  n <- protoNumber <|> try (string "min" >> return 1) <|> try (string "max" >> return 0xFFFFFFFF)
+  return n
