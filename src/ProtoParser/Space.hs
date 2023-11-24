@@ -1,5 +1,6 @@
 module ProtoParser.Space
-  ( spaces',
+  ( space',
+    spaces',
     spaces1,
   )
 where

@@ -2,7 +2,6 @@ module Unit.Package (allTests) where
 
 import Data.Either (fromRight, isRight)
 import ProtoParser.Package
-import Protobuf (Package)
 import Test.HUnit
 import Text.Parsec (parse)
 

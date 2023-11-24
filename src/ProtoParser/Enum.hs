@@ -8,7 +8,7 @@ module ProtoParser.Enum
   )
 where
 
-import ProtoParser.Misc
+import ProtoParser.Type
 import ProtoParser.Space (spaces')
 import Protobuf
 import Text.Parsec

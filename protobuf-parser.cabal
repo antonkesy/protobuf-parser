@@ -28,13 +28,14 @@ library
       Protobuf
       ProtoParser
       ProtoParser.Comment
+      ProtoParser.EndOfLine
       ProtoParser.Enum
       ProtoParser.Import
       ProtoParser.Message
-      ProtoParser.Misc
       ProtoParser.Package
       ProtoParser.Service
       ProtoParser.Space
+      ProtoParser.Type
   other-modules:
       Paths_protobuf_parser
   autogen-modules:
@@ -70,10 +71,10 @@ test-suite protobuf-parser-test
       Unit.Enum
       Unit.Import
       Unit.Message
-      Unit.Misc
       Unit.Package
       Unit.ProtoParser
       Unit.Service
+      Unit.Type
       Paths_protobuf_parser
   autogen-modules:
       Paths_protobuf_parser

@@ -1,22 +1,24 @@
 module ProtoParser
   ( module ProtoParser.Enum,
-    module ProtoParser.Misc,
+    module ProtoParser.Type,
     module ProtoParser.Import,
     module ProtoParser.Comment,
     module ProtoParser.Message,
     module ProtoParser.Package,
     module ProtoParser.Service,
+    module ProtoParser.EndOfLine,
     parseProtobuf,
   )
 where
 
 import ProtoParser.Comment
+import ProtoParser.EndOfLine
 import ProtoParser.Enum
 import ProtoParser.Import
 import ProtoParser.Message
-import ProtoParser.Misc
 import ProtoParser.Package
 import ProtoParser.Service
+import ProtoParser.Type
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String

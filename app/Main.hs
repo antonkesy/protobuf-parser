@@ -3,12 +3,17 @@ module Main (main) where
 import ProtoParser
 
 erro :: String
+-- erro =
+--   "message Foo {\
+--   \int32 foo = 1;\
+--   \int32 bar = 2;\
+--   \}"
+
 erro =
-  "import \"foo.proto\";\n\
-  \// comment\n\
-  \package foobar;\n\
-  \import \"bar.proto\";\
-  \// comment\n"
+  "message Foo {\
+  \int32 bar = 2;\
+  \}"
+
 
 main :: IO ()
 main = do

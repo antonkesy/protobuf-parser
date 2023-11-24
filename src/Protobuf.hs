@@ -42,7 +42,7 @@ data FloatType
   | Float
   deriving (Show, Eq)
 
-data ScalarType = IntType IntType | FloatType FloatType | String | Bytes | Bool
+data ScalarType = IntType IntType | FloatType FloatType | StringType | BytesType | BoolType
   deriving (Show, Eq)
 
 data MapKey = StringKey String | IntKey IntType
@@ -51,10 +51,10 @@ data MapKey = StringKey String | IntKey IntType
 data MapValue = MapName String | ScalarType
   deriving (Show, Eq)
 
-data ProtoDataType = ProtoScalarType | MessageName | EnumName | Map MapKey MapValue
+data DataType = Scalar ScalarType | Compound Name | Map MapKey MapValue
   deriving (Show, Eq)
 
-data MessageField = MessageField ProtoDataType Name FieldNumber Repeat
+data MessageField = MessageField DataType Name FieldNumber Repeat
   deriving (Show, Eq)
 
 data Message = Message MessageName [MessageField]

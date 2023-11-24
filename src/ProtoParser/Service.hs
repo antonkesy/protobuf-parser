@@ -1,7 +1,7 @@
 module ProtoParser.Service (parseService, parseService') where
 
 import Data.Maybe (catMaybes)
-import ProtoParser.Misc
+import ProtoParser.Type
 import ProtoParser.Space (spaces', spaces1)
 import Protobuf
 import Text.Parsec

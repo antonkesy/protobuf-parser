@@ -1,14 +1,16 @@
-module Unit.Misc (allTests) where
+module Unit.Type (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser.Misc
+import ProtoParser.Type
+import Protobuf
 import Test.HUnit
 import Text.Parsec (parse)
 
 allTests :: [Test]
 allTests =
   [ TestLabel "numberParser" testNumberParser,
-    TestLabel "protoName" testProtoName
+    TestLabel "protoName" testProtoName,
+    TestLabel "scalarType" testSclarType
   ]
 
 testNumberParser :: Test
@@ -36,3 +38,8 @@ testProtoName = TestCase $ do
   assertEqual "not a name" False (isRight (parse protoName "" "-1"))
   assertEqual "Uppercase" "TEST" (fromRight "Default" (parse protoName "" "TEST"))
   assertEqual "UpperCamelCase" "TestTest" (fromRight "Default" (parse protoName "" "TestTest"))
+
+testSclarType :: Test
+testSclarType = TestCase $ do
+  assertEqual "int32" ((IntType Int32)) (fromRight (BoolType) (parse parseScalarType "" "int32"))
+  assertEqual "double" ((FloatType Double)) (fromRight (BoolType) (parse parseScalarType "" "double"))

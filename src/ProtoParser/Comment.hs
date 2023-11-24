@@ -8,7 +8,7 @@ module ProtoParser.Comment
 where
 
 import Control.Monad (void)
-import ProtoParser.Misc (eol)
+import ProtoParser.EndOfLine (eol)
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String

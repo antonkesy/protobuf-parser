@@ -15,12 +15,28 @@ allTests =
 failMessage :: Message
 failMessage = Message "FAIL" []
 
+testMessage1 :: String
+testMessage1 =
+  "message Foo {\
+  \int32 foo = 1;\
+  \double bar = 2;\
+  \}"
+
+testMessage1Proto :: Message
+testMessage1Proto =
+  Message
+    "Foo"
+    [ MessageField (Scalar (IntType Int32)) "foo" 1 False,
+      MessageField (Scalar (FloatType Double)) "bar" 2 False
+    ]
+
 testSimple :: Test
 testSimple = TestCase $ do
   assertEqual "empty" False (isRight (parse parseMessage "" ""))
   assertEqual "keyword only" False (isRight (parse parseMessage "" "message"))
   assertEqual "missing name" False (isRight (parse parseMessage "" "message {}"))
   assertEqual "emptyMessage" (Message "Foo" []) (fromRight failMessage (parse parseMessage "" "message Foo {}"))
+  assertEqual "simple" testMessage1Proto (fromRight failMessage (parse parseMessage "" testMessage1))
 
 ----------------------------------------------------------------
 

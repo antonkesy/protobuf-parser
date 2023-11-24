@@ -9,7 +9,7 @@ allTests :: [Test]
 allTests =
   [ TestLabel "testSingleLine" testSingleLineComment,
     TestLabel "testMultiLine" testMultiLineComment,
-    TestLabel "both" testMultiLineComment
+    TestLabel "both" testBothComments
   ]
 
 testSingleLineComment :: Test
