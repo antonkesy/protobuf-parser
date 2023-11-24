@@ -43,7 +43,6 @@ testSimple = TestCase $ do
 defaulTestMap :: MessageField
 defaulTestMap = MessageField (Map (StringKey "") (MapName "")) "TEST" 0 False
 
--- map<key_type, value_type> map_field = N;
 testMap :: Test
 testMap = TestCase $ do
   assertEqual "empty" False (isRight (parse parseMap "" ""))
