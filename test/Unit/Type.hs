@@ -44,6 +44,7 @@ testSclarType :: Test
 testSclarType = TestCase $ do
   assertEqual "int32" ((IntType Int32)) (fromRight (BoolType) (parse parseScalarType "" "int32"))
   assertEqual "double" ((FloatType Double)) (fromRight (BoolType) (parse parseScalarType "" "double"))
+  assertEqual "string" ((StringType)) (fromRight (BoolType) (parse parseScalarType "" "string"))
 
 ----------------------------------------------------------------
 

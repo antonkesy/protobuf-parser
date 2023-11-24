@@ -64,12 +64,12 @@ parseStringType = do
 parseScalarType :: Parser ScalarType
 parseScalarType =
   do
-    intType <- parseIntType
+    intType <- try parseIntType
     return (IntType intType)
-    <|> (string "double" >> return (FloatType Double))
-    <|> (string "float" >> return (FloatType Float))
-    <|> (string "string" >> return StringType)
-    <|> (string "bytes" >> return BytesType)
+    <|> try (string "double" >> return (FloatType Double))
+    <|> try (string "float" >> return (FloatType Float))
+    <|> try (string "string" >> return StringType)
+    <|> try (string "bytes" >> return BytesType)
 
 ----------------------------------------------------------------
 
