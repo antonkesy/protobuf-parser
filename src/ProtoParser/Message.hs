@@ -5,6 +5,7 @@ import ProtoParser.Misc
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import ProtoParser.Space (spaces', spaces1)
 
 parseMessage' :: Protobuf -> Parser Protobuf
 parseMessage' p = do
@@ -21,16 +22,16 @@ parseMessage = do
 
 parseMessage'' :: Parser Message
 parseMessage'' = do
-  spaces
+  spaces'
   _ <- string "message"
   spaces1
   name <- protoName
-  spaces
+  spaces'
   _ <- char '{'
-  spaces
+  spaces'
   -- TODO: multiple inputs
   fields <- parseMessageField `sepEndBy1` char ';'
-  spaces
+  spaces'
   _ <- char '}'
   return (Message name (catMaybes fields))
 
@@ -76,22 +77,22 @@ parseStringType = do
 -- TODO: maps
 parseMap :: Parser MessageField
 parseMap = do
-  spaces
+  spaces'
   _ <- string "map"
-  spaces
+  spaces'
   _ <- char '<'
-  spaces
+  spaces'
   key <- parseMapKey
-  spaces
+  spaces'
   _ <- char ','
   value <- parseMapValue
-  spaces
+  spaces'
   _ <- char '>'
-  spaces
+  spaces'
   name <- protoName -- TODO: missing
-  spaces
+  spaces'
   _ <- char '='
-  spaces
+  spaces'
   fieldNumber <- protoNumber -- TODO: missing -> convert to MessageField
   return (MessageField (Map key value) name fieldNumber False)
 

@@ -1,8 +1,6 @@
 module ProtoParser.Misc
-  ( whitespace,
-    protoName,
+  ( protoName,
     protoNumber,
-    spaces1,
     eol,
   )
 where
@@ -11,14 +9,6 @@ import Control.Monad (void)
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
-
-whitespace :: Parser ()
-whitespace = void (many (oneOf " \n\t")) <?> "whitespace"
-
-----------------------------------------------------------------
-
-spaces1 :: Parser ()
-spaces1 = skipMany1 space
 
 ----------------------------------------------------------------
 

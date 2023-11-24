@@ -4,9 +4,11 @@ import ProtoParser
 
 erro :: String
 erro =
-  "package foo;\n\
-  \message B {}\n\
-  \package bar;"
+  "import \"foo.proto\";\n\
+  \// comment\n\
+  \package foobar;\n\
+  \import \"bar.proto\";\
+  \// comment\n"
 
 main :: IO ()
 main = do

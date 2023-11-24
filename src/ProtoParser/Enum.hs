@@ -9,6 +9,7 @@ module ProtoParser.Enum
 where
 
 import ProtoParser.Misc
+import ProtoParser.Space (spaces')
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
@@ -24,13 +25,13 @@ parseEnum' p = do
 
 protoEnum :: Parser Protobuf.Enum
 protoEnum = do
-  spaces
+  spaces'
   _ <- string "enum" <?> "Expected enum keyword"
-  spaces
+  spaces'
   name <- protoName <?> "Expected enum name"
-  spaces
+  spaces'
   _ <- char '{' <?> ("Expected '{' after enum name" ++ name)
-  spaces
+  spaces'
   values <- try enumField `sepEndBy1` (try (string ";") <|> try (string ";\n")) <?> "Expected at least one enum value"
   return (Protobuf.Enum name values)
 
@@ -42,11 +43,11 @@ enumField = do
     "option" -> do enumOption
     "reserved" -> do enumReserved
     _ -> do
-      spaces -- TODO: 1 space required?
+      spaces'
       _ <- char '='
-      spaces -- TODO: 1 space required?
+      spaces'
       number <- enumNumber
-      spaces
+      spaces'
       return (EnumValue name number)
 
 -- https://protobuf.dev/programming-guides/proto3/#enum
@@ -56,11 +57,11 @@ enumOption = do
   optionName <- protoName
   case optionName of
     "allow_alias" -> do
-      spaces
+      spaces'
       _ <- char '='
-      spaces
+      spaces'
       active <- parseBoolOption
-      spaces
+      spaces'
       return (EnumOption "allow_alias" active)
     _ -> fail "Unknown option"
 
@@ -73,7 +74,7 @@ parseBoolOption =
 -- https://protobuf.dev/programming-guides/proto3/#reserved
 enumReserved :: Parser EnumField
 enumReserved = do
-  spaces
+  spaces'
   try parseReservedNames <|> try parseReservedNumbers
 
 parseReservedNames :: Parser EnumField

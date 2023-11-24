@@ -1,6 +1,6 @@
 module ProtoParser.Import (parseImport, parseImport') where
 
-import ProtoParser.Misc (spaces1)
+import ProtoParser.Space (spaces', spaces1)
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
@@ -19,11 +19,11 @@ pathExtension = ".proto"
 
 parseImport :: Parser ImportPath
 parseImport = do
-  skipMany space
+  spaces'
   _ <- string "import" <?> "Expected import keyword"
   spaces1
   _ <- char '"' <?> "Expected '\"' after import keyword"
   path <- anyChar `manyTill` string (pathExtension ++ "\"")
-  spaces
+  spaces'
   _ <- char ';' <?> "Expected ';' at end of import statement"
   return (path ++ pathExtension)

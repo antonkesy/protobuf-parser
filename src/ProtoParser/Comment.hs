@@ -3,6 +3,7 @@ module ProtoParser.Comment
     parseComment',
     parseSingleLineComment,
     parseMultiLineComment,
+    removeComment,
   )
 where
 
@@ -13,6 +14,7 @@ import Text.Parsec
 import Text.Parsec.String
 
 parseComment' :: Protobuf -> Parser Protobuf
+-- TODO: write try before do?
 parseComment' p = do
   _ <- parseComment
   return p
@@ -27,13 +29,12 @@ parseComment = do
   -- TODO: correct way to try?
   try parseSingleLineComment <|> try parseMultiLineComment
 
--- TODO: these comments could be anywhere
 parseSingleLineComment :: Parser Comment
 parseSingleLineComment = do
-  between (string "//") eol (many anyChar)
+  _ <- string "//"
+  manyTill anyChar (try eol)
 
--- TODO: these comments could be anywhere (same as spaces)
 parseMultiLineComment :: Parser Comment
-parseMultiLineComment = try $ do
+parseMultiLineComment = do
   _ <- string "/*"
   manyTill anyChar (try (string "*/"))

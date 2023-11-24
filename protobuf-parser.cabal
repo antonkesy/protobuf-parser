@@ -34,6 +34,7 @@ library
       ProtoParser.Misc
       ProtoParser.Package
       ProtoParser.Service
+      ProtoParser.Space
   other-modules:
       Paths_protobuf_parser
   autogen-modules:

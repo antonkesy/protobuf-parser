@@ -8,7 +8,8 @@ import Test.HUnit
 allTests :: [Test]
 allTests =
   [ TestLabel "text" testText,
-    TestLabel "splittedDefinitions" testSplittedDefinitions
+    TestLabel "splittedDefinitions" testSplittedDefinitions,
+    TestLabel "comments" testComments
   ]
 
 defaultTestProto :: Protobuf
@@ -82,3 +83,48 @@ testText = TestCase $ do
         )
     )
   assertEqual "multiple package" False (isRight (parseProtobuf multiplePackageText))
+
+textComment :: Protobuf
+textComment =
+  ( Protobuf
+      { package = (Just "foobar"),
+        imports = ["foo.proto", "bar.proto"],
+        options = [],
+        enums = [],
+        messages = [],
+        services = []
+      }
+  )
+
+testComment1 :: String
+testComment1 =
+  "import \"foo.proto\";\n\
+  \// comment\n\
+  \package foobar;\n\
+  \import \"bar.proto\";"
+
+testComment2 :: String
+testComment2 =
+  "import \"foo.proto\";\n\
+  \/* comment */\n\
+  \package foobar;\n\
+  \import \"bar.proto\";"
+
+testComment3 :: String
+testComment3 =
+  "import \"foo.proto\";\n\
+  \package /* comment */ foobar;\n\
+  \import \"bar.proto\";"
+
+testComment4 :: String
+testComment4 =
+  "import \"foo.proto\";\n\
+  \package /* comment \n\n */ foobar;\n\
+  \import \"bar.proto\";"
+
+testComments :: Test
+testComments = TestCase $ do
+  assertEqual "whole line 1" textComment (fromRight defaultTestProto (parseProtobuf testComment1))
+  assertEqual "whole line 1" textComment (fromRight defaultTestProto (parseProtobuf testComment2))
+  assertEqual "in-line" textComment (fromRight defaultTestProto (parseProtobuf testComment3))
+  assertEqual "multi in-line" textComment (fromRight defaultTestProto (parseProtobuf testComment4))

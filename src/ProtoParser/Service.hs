@@ -2,6 +2,7 @@ module ProtoParser.Service (parseService, parseService') where
 
 import Data.Maybe (catMaybes)
 import ProtoParser.Misc
+import ProtoParser.Space (spaces', spaces1)
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
@@ -21,41 +22,41 @@ parseService = do
 
 parseService'' :: Parser Service
 parseService'' = do
-  spaces
+  spaces'
   _ <- string "service"
   spaces1
   name <- protoName
-  spaces
+  spaces'
   _ <- char '{'
-  spaces
+  spaces'
   fields <- try parseServiceField `sepEndBy1` char ';'
-  spaces
+  spaces'
   _ <- char '}'
   return (Service name (catMaybes fields))
 
 parseServiceField :: Parser (Maybe RPC)
 parseServiceField = do
-  spaces
+  spaces'
   _ <- string "rpc"
   spaces1
   name <- protoName
-  spaces
+  spaces'
   _ <- char '('
-  spaces
+  spaces'
   isRequestStream <- option False (string "stream" >> spaces1 >> return True)
   request <- protoName
-  spaces
+  spaces'
   _ <- char ')'
-  spaces
+  spaces'
   _ <- string "returns"
-  spaces
+  spaces'
   _ <- char '('
-  spaces
+  spaces'
   isReplyStream <- option False (string "stream" >> spaces1 >> return True)
   reply <- protoName
-  spaces
+  spaces'
   _ <- char ')'
-  spaces
+  spaces'
   return
     ( Just
         ( RPC
