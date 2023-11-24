@@ -26,10 +26,13 @@ import Text.Parsec.String
 parseProtobuf :: String -> Either ParseError Protobuf
 parseProtobuf = parse protoValue ""
 
--- TODO : check for too many ';'
-
 protoValue :: Parser Protobuf
 protoValue = do
+  x <- (protoValue' emptyProtobuf)
+  return x
+
+protoValue' :: Protobuf -> Parser Protobuf
+protoValue' o = do
   x <-
     choice
       [ try parsePackage',
@@ -38,5 +41,9 @@ protoValue = do
         try parseEnum',
         try parseMessage'
       ]
-      `sepBy1` lookAhead anyToken
-  return (merge' x)
+  isEnd <- try ((lookAhead anyToken) >> return False) <|> return True
+  if isEnd
+    then return (merge o x)
+    else do
+      y <- protoValue' (merge o x)
+      return y

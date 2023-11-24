@@ -66,4 +66,12 @@ testSplittedDefinitions = TestCase $ do
 
 testText :: Test
 testText = TestCase $ do
-  assertEqual "empty" False (isRight (parseProtobuf ""))
+  assertEqual
+    "too many semicolons"
+    False
+    ( isRight
+        ( parseProtobuf
+            "import \"foo.proto\";;\n\
+            \import \"bar.proto\";"
+        )
+    )

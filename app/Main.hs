@@ -4,21 +4,14 @@ import ProtoParser
 import Text.Parsec
 import Text.Parsec.String
 
-singleServiceText :: String
-singleServiceText =
-  "service SearchService {\n\
-  \  rpc Search(SearchRequest) returns (SearchResponse);\n\
-  \}"
-
-multipleServiceText :: String
-multipleServiceText =
-  "service Multiple {\n\
-  \  rpc Search(Foo) returns (Bar);\n\
-  \  rpc Search1(Bar) returns (Foo);\n\
-  \}"
+erro :: String
+erro =
+  "import \"foo.proto\";\n\
+  \import \"bar.proto\";"
 
 main :: IO ()
 main = do
-  case parse parseService "" multipleServiceText of
+  case parseProtobuf erro of
+    -- case parse parseProtobuf "" erro of
     Left err -> print err
     Right res -> print res

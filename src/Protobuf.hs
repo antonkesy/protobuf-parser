@@ -96,6 +96,19 @@ data Protobuf = Protobuf
   deriving (Show, Eq)
 
 ------------------------------------------------------------
+emptyProtobuf :: Protobuf
+emptyProtobuf =
+  ( Protobuf
+      { package = [],
+        imports = [],
+        options = [],
+        enums = [],
+        messages = [],
+        services = []
+      }
+  )
+
+------------------------------------------------------------
 
 merge' :: [Protobuf] -> Protobuf
 merge' = foldl1 Protobuf.merge
