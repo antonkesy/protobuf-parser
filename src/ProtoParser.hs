@@ -1,4 +1,3 @@
--- TODO: export only the necessary functions
 module ProtoParser
   ( module ProtoParser.Enum,
     module ProtoParser.Misc,

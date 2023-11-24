@@ -74,7 +74,6 @@ parseStringType = do
   StringKey <$> protoName
 
 ----------------------------------------------------------------
--- TODO: maps
 parseMap :: Parser MessageField
 parseMap = do
   spaces'
