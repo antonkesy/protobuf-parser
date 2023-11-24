@@ -31,18 +31,18 @@ protoValue = do
   return x
 
 protoValue' :: Protobuf -> Parser Protobuf
-protoValue' o = do
-  x <-
+protoValue' old = do
+  new <-
     choice
-      [ try (parsePackage' o),
-        try (parseImport' o),
-        try (parseComment' o),
-        try (parseEnum' o),
-        try (parseMessage' o)
+      [ try (parsePackage' old),
+        try (parseImport' old),
+        try (parseComment' old),
+        try (parseEnum' old),
+        try (parseMessage' old)
       ]
   isEnd <- try ((lookAhead anyToken) >> return False) <|> return True
   if isEnd
-    then return x
+    then return new
     else do
-      y <- protoValue' x
-      return y
+      newNew <- protoValue' new
+      return newNew
