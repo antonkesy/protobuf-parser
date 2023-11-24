@@ -6,10 +6,14 @@ import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
-parseService' :: Parser Protobuf
-parseService' = do
+parseService' :: Protobuf -> Parser Protobuf
+parseService' p = do
   x <- parseService
-  return (Protobuf {package = [], imports = [], options = [], enums = [], messages = [], services = [x]})
+  return
+    ( Protobuf.merge
+        p
+        (Protobuf {package = Nothing, imports = [], options = [], enums = [], messages = [], services = [x]})
+    )
 
 parseService :: Parser Service
 parseService = do

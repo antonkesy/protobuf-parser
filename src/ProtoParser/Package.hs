@@ -5,10 +5,17 @@ import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
-parsePackage' :: Parser Protobuf
-parsePackage' = do
+parsePackage' :: Protobuf -> Parser Protobuf
+parsePackage' p = do
   package' <- parsePackage
-  return (Protobuf {package = [package'], imports = [], options = [], enums = [], messages = [], services = []})
+  if package p /= Nothing
+    then unexpected ": There can only be one package definition per file"
+    else
+      return
+        ( Protobuf.merge
+            p
+            (Protobuf {package = (Just package'), imports = [], options = [], enums = [], messages = [], services = []})
+        )
 
 parsePackage :: Parser Package
 parsePackage = do

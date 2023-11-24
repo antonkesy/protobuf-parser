@@ -5,10 +5,14 @@ import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
-parseImport' :: Parser Protobuf
-parseImport' = do
+parseImport' :: Protobuf -> Parser Protobuf
+parseImport' p = do
   imp <- parseImport
-  return (Protobuf {package = [], imports = [imp], options = [], enums = [], messages = [], services = []})
+  return
+    ( Protobuf.merge
+        p
+        (Protobuf {package = Nothing, imports = [imp], options = [], enums = [], messages = [], services = []})
+    )
 
 pathExtension :: String
 pathExtension = ".proto"

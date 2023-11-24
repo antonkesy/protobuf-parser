@@ -8,16 +8,19 @@ module ProtoParser.Enum
   )
 where
 
-import Debug.Trace
 import ProtoParser.Misc
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
-parseEnum' :: Parser Protobuf
-parseEnum' = do
+parseEnum' :: Protobuf -> Parser Protobuf
+parseEnum' p = do
   x <- protoEnum
-  return (Protobuf {package = [], imports = [], options = [], enums = [x], messages = [], services = []})
+  return
+    ( Protobuf.merge
+        p
+        (Protobuf {package = Nothing, imports = [], options = [], enums = [x], messages = [], services = []})
+    )
 
 protoEnum :: Parser Protobuf.Enum
 protoEnum = do

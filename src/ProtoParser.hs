@@ -11,7 +11,6 @@ module ProtoParser
   )
 where
 
-import Debug.Trace
 import ProtoParser.Comment
 import ProtoParser.Enum
 import ProtoParser.Import
@@ -35,15 +34,15 @@ protoValue' :: Protobuf -> Parser Protobuf
 protoValue' o = do
   x <-
     choice
-      [ try parsePackage',
-        try parseImport',
-        try parseComment',
-        try parseEnum',
-        try parseMessage'
+      [ try (parsePackage' o),
+        try (parseImport' o),
+        try (parseComment' o),
+        try (parseEnum' o),
+        try (parseMessage' o)
       ]
   isEnd <- try ((lookAhead anyToken) >> return False) <|> return True
   if isEnd
-    then return (merge o x)
+    then return x
     else do
-      y <- protoValue' (merge o x)
+      y <- protoValue' x
       return y

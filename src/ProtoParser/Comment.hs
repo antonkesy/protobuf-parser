@@ -12,16 +12,15 @@ import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
-parseComment' :: Parser Protobuf
-parseComment' = do
+parseComment' :: Protobuf -> Parser Protobuf
+parseComment' p = do
   _ <- parseComment
-  return (Protobuf {package = [], imports = [], options = [], enums = [], messages = [], services = []})
+  return p
 
 removeComment :: Parser ()
 removeComment = do
   -- TODO: correct way to try?
   void (try parseSingleLineComment <|> try parseMultiLineComment)
-
 
 parseComment :: Parser Comment
 parseComment = do

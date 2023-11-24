@@ -14,7 +14,7 @@ allTests =
 defaultTestProto :: Protobuf
 defaultTestProto =
   ( Protobuf
-      { package = [],
+      { package = Nothing,
         imports = [],
         options = [],
         enums = [],
@@ -32,7 +32,7 @@ splitImportText =
 splitImportProto :: Protobuf
 splitImportProto =
   ( Protobuf
-      { package = ["foobar"],
+      { package = (Just "foobar"),
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],
@@ -50,7 +50,7 @@ splitImportText1 =
 splitImportProto1 :: Protobuf
 splitImportProto1 =
   ( Protobuf
-      { package = [],
+      { package = Nothing,
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],
@@ -58,6 +58,12 @@ splitImportProto1 =
         services = []
       }
   )
+
+multiplePackageText :: String
+multiplePackageText =
+  "package foo;\n\
+  \message B {}\n\
+  \package bar;"
 
 testSplittedDefinitions :: Test
 testSplittedDefinitions = TestCase $ do
@@ -75,3 +81,4 @@ testText = TestCase $ do
             \import \"bar.proto\";"
         )
     )
+  assertEqual "multiple package" False (isRight (parseProtobuf multiplePackageText))

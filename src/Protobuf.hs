@@ -85,8 +85,7 @@ data Option = Option Name Value
   deriving (Show, Eq)
 
 data Protobuf = Protobuf
-  -- { package :: Maybe String,
-  { package :: [String],
+  { package :: Maybe String,
     imports :: [ImportPath],
     options :: [Option],
     enums :: [Protobuf.Enum],
@@ -99,7 +98,7 @@ data Protobuf = Protobuf
 emptyProtobuf :: Protobuf
 emptyProtobuf =
   ( Protobuf
-      { package = [],
+      { package = Nothing,
         imports = [],
         options = [],
         enums = [],
@@ -116,10 +115,17 @@ merge' = foldl1 Protobuf.merge
 merge :: Protobuf -> Protobuf -> Protobuf
 merge a b =
   Protobuf
-    { package = package a ++ package b,
+    { package = mergePackages (package a) (package b),
       imports = imports a ++ imports b,
       options = options a ++ options b,
       enums = enums a ++ enums b,
       messages = messages a ++ messages b,
       services = services a ++ services b
     }
+  where
+    mergePackages :: Maybe String -> Maybe String -> Maybe String
+    mergePackages Nothing y = y
+    mergePackages x Nothing = x
+    mergePackages (Just x) (Just y)
+      | not (null x) && not (null y) = error "Conflicting non-empty packages"
+      | otherwise = Just (x ++ y)
