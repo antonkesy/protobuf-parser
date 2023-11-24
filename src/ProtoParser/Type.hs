@@ -3,6 +3,7 @@ module ProtoParser.Type
   )
 where
 
+import ProtoParser.Space (spaces')
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
@@ -69,3 +70,30 @@ parseScalarType =
     <|> (string "float" >> return (FloatType Float))
     <|> (string "string" >> return StringType)
     <|> (string "bytes" >> return BytesType)
+
+----------------------------------------------------------------
+
+parseMap :: Parser MessageField
+parseMap = do
+  spaces'
+  _ <- string "map"
+  spaces'
+  _ <- char '<'
+  spaces'
+  key <-
+    IntKey
+      <$> parseIntType
+        <|> StringKey
+      <$> protoName
+  spaces'
+  _ <- char ','
+  value <- MapName <$> protoName
+  spaces'
+  _ <- char '>'
+  spaces'
+  name <- protoName
+  spaces'
+  _ <- char '='
+  spaces'
+  fieldNumber <- protoNumber
+  return (MessageField (Map key value) name fieldNumber False)

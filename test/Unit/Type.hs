@@ -10,7 +10,8 @@ allTests :: [Test]
 allTests =
   [ TestLabel "numberParser" testNumberParser,
     TestLabel "protoName" testProtoName,
-    TestLabel "scalarType" testSclarType
+    TestLabel "scalarType" testSclarType,
+    TestLabel "map" testMap
   ]
 
 testNumberParser :: Test
@@ -43,3 +44,23 @@ testSclarType :: Test
 testSclarType = TestCase $ do
   assertEqual "int32" ((IntType Int32)) (fromRight (BoolType) (parse parseScalarType "" "int32"))
   assertEqual "double" ((FloatType Double)) (fromRight (BoolType) (parse parseScalarType "" "double"))
+
+----------------------------------------------------------------
+
+defaulTestMap :: MessageField
+defaulTestMap = MessageField (Map (StringKey "") (MapName "")) "TEST" 0 False
+
+testMap :: Test
+testMap = TestCase $ do
+  assertEqual "empty" False (isRight (parse parseMap "" ""))
+  assertEqual "keyword only" False (isRight (parse parseMap "" "map"))
+  assertEqual
+    "Simple"
+    ( MessageField (Map (StringKey "T") (MapName "V")) "name" 2 False
+    )
+    (fromRight defaulTestMap (parse parseMap "" "map<T,V> name = 2"))
+  assertEqual
+    "Simple"
+    ( MessageField (Map (IntKey Int32) (MapName "V")) "name" 2 False
+    )
+    (fromRight defaulTestMap (parse parseMap "" "map<int32,V> name = 2"))

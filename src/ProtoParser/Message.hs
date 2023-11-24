@@ -1,4 +1,4 @@
-module ProtoParser.Message (parseMessage, parseMessage', parseMap) where
+module ProtoParser.Message (parseMessage, parseMessage') where
 
 import ProtoParser.Reserved
 import ProtoParser.Space (spaces', spaces1)
@@ -61,28 +61,6 @@ parseDataType =
     <|> Compound <$> protoName
 
 ----------------------------------------------------------------
-parseMap :: Parser MessageField
-parseMap = do
-  spaces'
-  _ <- string "map"
-  spaces'
-  _ <- char '<'
-  spaces'
-  key <-
-    IntKey <$> parseIntType
-      <|> StringKey <$> protoName
-  spaces'
-  _ <- char ','
-  value <- MapName <$> protoName
-  spaces'
-  _ <- char '>'
-  spaces'
-  name <- protoName
-  spaces'
-  _ <- char '='
-  spaces'
-  fieldNumber <- protoNumber
-  return (MessageField (Map key value) name fieldNumber False)
 
 -- TODO: one of
 

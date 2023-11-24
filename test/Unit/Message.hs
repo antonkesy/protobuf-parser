@@ -8,9 +8,7 @@ import Text.Parsec (parse)
 
 allTests :: [Test]
 allTests =
-  [ TestLabel "simple" testSimple,
-    TestLabel "map" testMap
-  ]
+  [TestLabel "simple" testSimple]
 
 failMessage :: Message
 failMessage = Message "FAIL" []
@@ -51,23 +49,3 @@ testSimple = TestCase $ do
   assertEqual "emptyMessage" (Message "Foo" []) (fromRight failMessage (parse parseMessage "" "message Foo {}"))
   assertEqual "simple" testMessage1Proto (fromRight failMessage (parse parseMessage "" testMessage1))
   assertEqual "reserved" testMessageReservedProto (fromRight failMessage (parse parseMessage "" testMessageReserved))
-
-----------------------------------------------------------------
-
-defaulTestMap :: MessageField
-defaulTestMap = MessageField (Map (StringKey "") (MapName "")) "TEST" 0 False
-
-testMap :: Test
-testMap = TestCase $ do
-  assertEqual "empty" False (isRight (parse parseMap "" ""))
-  assertEqual "keyword only" False (isRight (parse parseMap "" "map"))
-  assertEqual
-    "Simple"
-    ( MessageField (Map (StringKey "T") (MapName "V")) "name" 2 False
-    )
-    (fromRight defaulTestMap (parse parseMap "" "map<T,V> name = 2"))
-  assertEqual
-    "Simple"
-    ( MessageField (Map (IntKey Int32) (MapName "V")) "name" 2 False
-    )
-    (fromRight defaulTestMap (parse parseMap "" "map<int32,V> name = 2"))
