@@ -7,6 +7,7 @@ import Unit.Message as Message
 import Unit.Package as Package
 import Unit.ProtoParser as Protobuf
 import Unit.Service as Service
+import Unit.Syntax as Syntax
 import Unit.Type as Type
 
 main :: IO ()
@@ -22,5 +23,6 @@ main =
             ++ Package.allTests
             ++ Service.allTests
             ++ Files.allTests
+            ++ Syntax.allTests
         )
     )

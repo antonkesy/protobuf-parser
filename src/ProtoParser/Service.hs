@@ -13,7 +13,7 @@ parseService' p = do
   return
     ( Protobuf.merge
         p
-        (Protobuf {package = Nothing, imports = [], options = [], enums = [], messages = [], services = [x]})
+        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [], messages = [], services = [x]})
     )
 
 parseService :: Parser Service

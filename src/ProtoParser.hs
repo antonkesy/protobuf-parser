@@ -7,6 +7,7 @@ module ProtoParser
     module ProtoParser.Package,
     module ProtoParser.Service,
     module ProtoParser.EndOfLine,
+    module ProtoParser.Syntax,
     parseProtobuf,
     parseProtoFile,
   )
@@ -19,6 +20,7 @@ import ProtoParser.Import
 import ProtoParser.Message
 import ProtoParser.Package
 import ProtoParser.Service
+import ProtoParser.Syntax
 import ProtoParser.Type
 import Protobuf
 import System.IO

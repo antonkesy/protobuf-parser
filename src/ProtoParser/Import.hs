@@ -11,7 +11,7 @@ parseImport' p = do
   return
     ( Protobuf.merge
         p
-        (Protobuf {package = Nothing, imports = [imp], options = [], enums = [], messages = [], services = []})
+        (Protobuf {syntax = Nothing, package = Nothing, imports = [imp], options = [], enums = [], messages = [], services = []})
     )
 
 pathExtension :: String

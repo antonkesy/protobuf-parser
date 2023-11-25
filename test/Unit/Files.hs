@@ -23,7 +23,8 @@ testFiles = TestCase $ do
   assertProtoFile
     "1"
     ( Protobuf
-        { package = Nothing,
+        { syntax = Nothing,
+          package = Nothing,
           imports = ["foo.proto"],
           options = [],
           enums = [],
@@ -40,7 +41,8 @@ testFiles = TestCase $ do
   assertProtoFile
     "2"
     ( Protobuf
-        { package = Just "foobar",
+        { syntax = Nothing,
+          package = Just "foobar",
           imports = ["foo.proto", "bar.proto"],
           options = [],
           enums = [],

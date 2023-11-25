@@ -15,7 +15,8 @@ allTests =
 defaultTestProto :: Protobuf
 defaultTestProto =
   ( Protobuf
-      { package = Nothing,
+      { syntax = Nothing,
+        package = Nothing,
         imports = [],
         options = [],
         enums = [],
@@ -33,7 +34,8 @@ splitImportText =
 splitImportProto :: Protobuf
 splitImportProto =
   ( Protobuf
-      { package = Just "foobar",
+      { syntax = Nothing,
+        package = Just "foobar",
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],
@@ -51,7 +53,8 @@ splitImportText1 =
 splitImportProto1 :: Protobuf
 splitImportProto1 =
   ( Protobuf
-      { package = Nothing,
+      { syntax = Nothing,
+        package = Nothing,
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],
@@ -87,7 +90,8 @@ testText = TestCase $ do
 textComment :: Protobuf
 textComment =
   ( Protobuf
-      { package = Just "foobar",
+      { syntax = Nothing,
+        package = Just "foobar",
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],

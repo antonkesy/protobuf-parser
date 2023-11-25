@@ -15,7 +15,7 @@ parsePackage' p = do
       return
         ( Protobuf.merge
             p
-            (Protobuf {package = Just package', imports = [], options = [], enums = [], messages = [], services = []})
+            (Protobuf {syntax = Nothing, package = Just package', imports = [], options = [], enums = [], messages = [], services = []})
         )
 
 parsePackage :: Parser Package

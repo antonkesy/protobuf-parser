@@ -22,7 +22,7 @@ parseEnum' p = do
   return
     ( Protobuf.merge
         p
-        (Protobuf {package = Nothing, imports = [], options = [], enums = [x], messages = [], services = []})
+        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [x], messages = [], services = []})
     )
 
 protoEnum :: Parser Protobuf.Enum

@@ -36,6 +36,7 @@ library
       ProtoParser.Reserved
       ProtoParser.Service
       ProtoParser.Space
+      ProtoParser.Syntax
       ProtoParser.Type
   other-modules:
       Paths_protobuf_parser
@@ -76,6 +77,7 @@ test-suite protobuf-parser-test
       Unit.Package
       Unit.ProtoParser
       Unit.Service
+      Unit.Syntax
       Unit.Type
       Paths_protobuf_parser
   autogen-modules:

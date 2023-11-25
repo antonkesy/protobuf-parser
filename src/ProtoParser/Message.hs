@@ -14,7 +14,7 @@ parseMessage' p = do
   return
     ( Protobuf.merge
         p
-        (Protobuf {package = Nothing, imports = [], options = [], enums = [], messages = [x], services = []})
+        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [], messages = [x], services = []})
     )
 
 parseMessage :: Parser Message

@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs #-}
+
 module Protobuf (module Protobuf) where
 
 import Data.Word (Word32)
@@ -123,8 +124,14 @@ data Option
   = Option Name Value
   deriving (Show, Eq)
 
+data Syntax
+  = Proto2
+  | Proto3
+  deriving (Show, Eq)
+
 data Protobuf = Protobuf
-  { package :: Maybe String,
+  { syntax :: Maybe Syntax,
+    package :: Maybe String,
     imports :: [ImportPath],
     options :: [Option],
     enums :: [Protobuf.Enum],
@@ -139,6 +146,7 @@ emptyProtobuf =
   ( Protobuf
       { package = Nothing,
         imports = [],
+        syntax = Nothing,
         options = [],
         enums = [],
         messages = [],
@@ -154,7 +162,8 @@ merge' = foldl1 Protobuf.merge
 merge :: Protobuf -> Protobuf -> Protobuf
 merge a b =
   Protobuf
-    { package = mergePackages (package a) (package b),
+    { syntax = mergeSyntax (syntax a) (syntax b),
+      package = mergePackages (package a) (package b),
       imports = imports a ++ imports b,
       options = options a ++ options b,
       enums = enums a ++ enums b,
@@ -168,3 +177,9 @@ merge a b =
     mergePackages (Just x) (Just y)
       | not (null x) && not (null y) = error "Conflicting non-empty packages"
       | otherwise = Just (x ++ y)
+    mergeSyntax :: Maybe Syntax -> Maybe Syntax -> Maybe Syntax
+    mergeSyntax Nothing y = y
+    mergeSyntax x Nothing = x
+    mergeSyntax (Just x) (Just y)
+      | x == y = Just x
+      | otherwise = error "Conflicting syntax versions"
