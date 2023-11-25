@@ -4,6 +4,7 @@ import Unit.Enum as Unit
 import Unit.Files as Files
 import Unit.Import as Import
 import Unit.Message as Message
+import Unit.Option as Option
 import Unit.Package as Package
 import Unit.ProtoParser as Protobuf
 import Unit.Service as Service
@@ -24,5 +25,6 @@ main =
             ++ Service.allTests
             ++ Files.allTests
             ++ Syntax.allTests
+            ++ Option.allTests
         )
     )

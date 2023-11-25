@@ -29,7 +29,7 @@ parseService'' = do
   spaces'
   _ <- char '{'
   spaces'
-  fields <- try parseServiceField `sepEndBy1` char ';'
+  fields <- try parseServiceField `sepEndBy1` (lookAhead anyChar)
   spaces'
   _ <- char '}'
   return (Service name (catMaybes fields))
@@ -56,6 +56,10 @@ parseServiceField = do
   reply <- protoName
   spaces'
   _ <- char ')'
+  spaces'
+  _ <- char '{'
+  spaces'
+  _ <- char '}'
   spaces'
   return
     ( Just

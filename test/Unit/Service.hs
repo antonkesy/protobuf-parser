@@ -17,7 +17,7 @@ failMessage = Service "FAIL" []
 simpleServiceText :: String
 simpleServiceText =
   "service SearchService {\n\
-  \  rpc Search(SearchRequest) returns (SearchResponse);\n\
+  \  rpc Search(SearchRequest) returns (SearchResponse) {}\n\
   \}"
 
 simpleService :: Service
@@ -33,8 +33,8 @@ simpleService =
 multipleServiceText :: String
 multipleServiceText =
   "service Multiple {\n\
-  \  rpc Search(Foo) returns (Bar);\n\
-  \  rpc Search1(Bar) returns (Foo);\n\
+  \  rpc Search(Foo) returns (Bar) {}\n\
+  \  rpc Search1(Bar) returns (Foo) {}\n\
   \}"
 
 multipleService :: Service
@@ -54,7 +54,7 @@ multipleService =
 streamRequestServiceText :: String
 streamRequestServiceText =
   "service Multiple {\n\
-  \  rpc Search(stream Foo) returns (Bar);\n\
+  \  rpc Search(stream Foo) returns (Bar) {}\n\
   \}"
 
 streamRequestService :: Service
@@ -70,7 +70,7 @@ streamRequestService =
 streamReplyServiceText :: String
 streamReplyServiceText =
   "service Multiple {\n\
-  \  rpc Search(Foo) returns (stream Bar);\n\
+  \  rpc Search(Foo) returns (stream Bar) {}\n\
   \}"
 
 streamReplyService :: Service

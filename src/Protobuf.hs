@@ -73,6 +73,7 @@ data MessageField
   | OptionalMessageField DataType Name FieldNumber
   | RepeatedMessageField DataType Name FieldNumber
   | MessageReserved MessageReservedValues
+  | OneOfMessageField Name [MessageField]
   deriving (Show, Eq)
 
 data Message

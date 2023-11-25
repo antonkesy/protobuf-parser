@@ -31,10 +31,11 @@ parseMessage'' =
 
 parseMessageField :: Parser MessageField
 parseMessageField =
-  spaces' *> (try implicitField <|> try optionalField <|> try repeatedField <|> try reservedField)
+  spaces' *> (try implicitField <|> try optionalField <|> try repeatedField <|> try reservedField <|> try oneofField)
   where
     fieldName = spaces' *> protoName
     fieldNumber = spaces' *> char '=' *> spaces' *> protoNumber
+    fields = try parseMessageField `sepEndBy` char ';'
     reservedValues =
       try (ReservedMessageNames <$> reservedNames)
         <|> try (ReservedMessageNumbers <$> reservedNumbers protoNumber fieldNumberRange)
@@ -56,6 +57,10 @@ parseMessageField =
     reservedField =
       MessageReserved
         <$> (string "reserved" *> spaces' *> reservedValues)
+    oneofField =
+      OneOfMessageField
+        <$> (string "oneof" *> spaces' *> protoName)
+        <*> (spaces' *> char '{' *> spaces' *> fields <* spaces' <* char '}' <* spaces')
 
 fieldNumberRange :: Parser FieldNumber
 fieldNumberRange = do

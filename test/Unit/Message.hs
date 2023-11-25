@@ -80,6 +80,26 @@ testReservedNamesProto =
     [ MessageReserved (ReservedMessageNames (ReservedNames ["foo", "bar"]))
     ]
 
+testOneOf :: String
+testOneOf =
+  "message Foo {\
+  \oneof foo {\
+  \int32 bar = 1;\
+  \double baz = 2;\
+  \}\
+  \}"
+
+testOneOfProto :: Message
+testOneOfProto =
+  Message
+    "Foo"
+    [ OneOfMessageField
+        "foo"
+        [ ImplicitMessageField (Scalar (IntType Int32)) "bar" 1,
+          ImplicitMessageField (Scalar (FloatType Double)) "baz" 2
+        ]
+    ]
+
 testSimple :: Test
 testSimple = TestCase $ do
   assertEqual "empty" False (isRight (parse parseMessage "" ""))
@@ -91,3 +111,4 @@ testSimple = TestCase $ do
   assertEqual "optional" testOptionalProto (fromRight failMessage (parse parseMessage "" testOptional))
   assertEqual "repeated" testRepeatedProto (fromRight failMessage (parse parseMessage "" testRepeated))
   assertEqual "reserved names" testReservedNamesProto (fromRight failMessage (parse parseMessage "" testReservedNames))
+  assertEqual "oneof" testOneOfProto (fromRight failMessage (parse parseMessage "" testOneOf))

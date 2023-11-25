@@ -32,6 +32,7 @@ library
       ProtoParser.Enum
       ProtoParser.Import
       ProtoParser.Message
+      ProtoParser.Option
       ProtoParser.Package
       ProtoParser.Reserved
       ProtoParser.Service
@@ -74,6 +75,7 @@ test-suite protobuf-parser-test
       Unit.Files
       Unit.Import
       Unit.Message
+      Unit.Option
       Unit.Package
       Unit.ProtoParser
       Unit.Service

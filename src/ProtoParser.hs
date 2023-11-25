@@ -8,6 +8,7 @@ module ProtoParser
     module ProtoParser.Service,
     module ProtoParser.EndOfLine,
     module ProtoParser.Syntax,
+    module ProtoParser.Option,
     parseProtobuf,
     parseProtoFile,
   )
@@ -18,6 +19,7 @@ import ProtoParser.EndOfLine
 import ProtoParser.Enum
 import ProtoParser.Import
 import ProtoParser.Message
+import ProtoParser.Option
 import ProtoParser.Package
 import ProtoParser.Service
 import ProtoParser.Syntax
@@ -49,7 +51,10 @@ protoValue' old = do
         try (parseImport' old),
         try (parseComment' old),
         try (parseEnum' old),
-        try (parseMessage' old)
+        try (parseMessage' old),
+        try (parseOption' old),
+        try (parseSyntax' old),
+        try (parseService' old)
       ]
   isEnd <- try (lookAhead anyChar >> return False) <|> return True
   if isEnd
