@@ -68,11 +68,20 @@ data DataType
   | Map MapKey MapValue
   deriving (Show, Eq)
 
+data OptionValue
+  = StringValue String
+  | BoolValue Bool
+  | CompoundValue Name
+  deriving (Show, Eq)
+
+data FieldOption = FieldOption Name OptionValue
+  deriving (Show, Eq)
+
 data MessageField
-  = ImplicitMessageField DataType Name FieldNumber
-  | OptionalMessageField DataType Name FieldNumber
-  | RepeatedMessageField DataType Name FieldNumber
-  | MessageReserved MessageReservedValues
+  = ImplicitMessageField DataType Name FieldNumber -- [FieldOption]
+  | OptionalMessageField DataType Name FieldNumber -- [FieldOption]
+  | RepeatedMessageField DataType Name FieldNumber -- [FieldOption]
+  | MessageReserved MessageReservedValues -- [FieldOption]
   | OneOfMessageField Name [MessageField]
   deriving (Show, Eq)
 
@@ -124,7 +133,7 @@ data RPC
   deriving (Show, Eq)
 
 data Option
-  = Option Name Value
+  = Option Name OptionValue
   deriving (Show, Eq)
 
 data Syntax

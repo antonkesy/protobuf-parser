@@ -12,9 +12,20 @@ allTests =
   ]
 
 testOption :: Option
-testOption = Option ("test") ("fail")
+testOption = Option ("test") (StringValue ("fail"))
 
 testImport :: Test
 testImport = TestCase $ do
   assertEqual "empty" False (isRight (parse parseOption "" ""))
-  assertEqual "java_package" (Option "java_package" "de.test") (fromRight testOption (parse parseOption "" "option java_package = \"de.test\";"))
+  assertEqual
+    "java_package"
+    (Option "java_package" (StringValue "de.test"))
+    (fromRight testOption (parse parseOption "" "option java_package = \"de.test\";"))
+  assertEqual
+    "bool option"
+    (Option "cc_enable_arenas" (BoolValue True))
+    (fromRight testOption (parse parseOption "" "option cc_enable_arenas = true;"))
+  assertEqual
+    "compund option"
+    (Option "optimize_for" (CompoundValue "SPEED"))
+    (fromRight testOption (parse parseOption "" "option optimize_for = SPEED;"))

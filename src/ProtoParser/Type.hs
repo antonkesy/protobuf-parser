@@ -8,12 +8,14 @@ import Protobuf
 import Text.Parsec
 import Text.Parsec.String
 
+-- TODO: rename parseName
 protoName :: Parser String
 protoName = do
   (:)
     <$> letter
     <*> many (alphaNum <|> char '_')
 
+-- TODO: rename parseFieldNumber
 protoNumber :: Parser FieldNumber
 protoNumber = do
   n <- read <$> many1 digit
@@ -70,3 +72,16 @@ parseDataType :: Parser DataType
 parseDataType =
   Scalar <$> parseScalarType
     <|> Compound <$> protoName
+
+parseBool :: Parser Bool
+parseBool =
+  try (string "true" >> return True)
+    <|> (string "false" >> return False)
+    <?> "Expected true or false"
+
+-- TODO: replace all
+parseString :: Parser String
+parseString =
+  char '\"'
+    *> manyTill anyChar (char '\"')
+    <* spaces'

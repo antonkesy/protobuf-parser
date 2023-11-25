@@ -61,21 +61,15 @@ parseEnumField =
     optionField =
       EnumOption
         <$> (string "option" *> spaces1 *> protoName)
-        <*> (spaces1 *> char '=' *> spaces' *> parseBoolOption)
+        <*> (spaces1 *> char '=' *> spaces' *> parseBool)
     reservedField =
       EnumReserved
         <$> (string "reserved" *> spaces' *> reservedValues)
 
-parseBoolOption :: Parser Bool
-parseBoolOption =
-  try (string "true" >> return True)
-    <|> (string "false" >> return False)
-    <?> "Expected true or false"
-
 enumNumber :: Parser EnumNumber
 enumNumber =
   do
-    n <- (read <$> many1 digit)
+    n <- read <$> many1 digit
     if n >= (minBound :: EnumNumber) && n <= (maxBound :: EnumNumber)
       then return n
       else fail "Number not in valid range"
