@@ -1,8 +1,7 @@
 module Main (main) where
 
-import ProtoParser
-
--- import Text.Parsec (parse)
+import ProtoParser.Syntax
+import Text.Parsec (parse)
 
 -- erro :: String
 -- erro =
@@ -14,7 +13,13 @@ import ProtoParser
 
 main :: IO ()
 main = do
-  result <- parseProtoFile "example.proto"
-  case result of
+  case parse parseSyntax "" "syntax = \"proto2\";" of
     Left err -> putStrLn $ "Parse error: " ++ show err
     Right protobuf -> putStrLn $ "Successfully parsed: " ++ show protobuf
+
+-- main :: IO ()
+-- main = do
+--   result <- parseProtoFile "example.proto"
+--   case result of
+--     Left err -> putStrLn $ "Parse error: " ++ show err
+--     Right protobuf -> putStrLn $ "Successfully parsed: " ++ show protobuf
