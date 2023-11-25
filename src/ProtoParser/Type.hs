@@ -10,89 +10,63 @@ import Text.Parsec.String
 
 protoName :: Parser String
 protoName = do
-  first <- letter <?> "Expected first letter to be ...?"
-  rest <- many (alphaNum <|> char '_' <?> "Expected letter, number or '_'")
-  return (first : rest)
-
-----------------------------------------------------------------
+  (:)
+    <$> letter
+    <*> many (alphaNum <|> char '_')
 
 protoNumber :: Parser FieldNumber
-protoNumber =
-  -- https://protobuf.dev/programming-guides/proto3/#assigning
-  let val = (read <$> many1 digit)
-   in do
-        n <- val
-        -- 19,000 to 19,999 are reserved for the Protocol Buffers
-        if 19000 <= n && n <= 19999
-          then fail "number reserved"
-          else
-            if 1 <= n && n <= 536870911 -- Range from 1 to 536,870,911
-              then return n
-              else fail "number out of range"
-
-----------------------------------------------------------------
+protoNumber = do
+  n <- read <$> many1 digit
+  case () of
+    -- 19,000 to 19,999 are reserved for the Protocol Buffers
+    _ | n >= 19000 && n < 20000 -> fail "number reserved"
+    -- FieldNumber  [1..536,870,911]
+    _ | n <= 0 || n > 536870911 -> fail "number out of range"
+    _ -> return n
 
 parseIntType :: Parser IntType
 parseIntType =
-  let int32 = string "int32" >> return Int32
-      int64 = string "int64" >> return Int64
-      uint32 = string "uint32" >> return UInt32
-      uint64 = string "uint64" >> return UInt64
-      sint32 = string "sint32" >> return SInt32
-      sint64 = string "sint64" >> return SInt64
-      fixed32 = string "fixed32" >> return Fixed32
-      fixed64 = string "fixed64" >> return Fixed64
-      sfixed32 = string "sfixed32" >> return SFixed32
-      sfixed64 = string "sfixed64" >> return SFixed64
-   in int32
-        <|> int64
-        <|> uint32
-        <|> uint64
-        <|> sint32
-        <|> sint64
-        <|> fixed32
-        <|> fixed64
-        <|> sfixed32
-        <|> sfixed64
+  (string "int32" >> return Int32)
+    <|> (string "int64" >> return Int64)
+    <|> (string "uint32" >> return UInt32)
+    <|> (string "uint64" >> return UInt64)
+    <|> (string "sint32" >> return SInt32)
+    <|> (string "sint64" >> return SInt64)
+    <|> (string "fixed32" >> return Fixed32)
+    <|> (string "fixed64" >> return Fixed64)
+    <|> (string "sfixed32" >> return SFixed32)
+    <|> (string "sfixed64" >> return SFixed64)
 
-----------------------------------------------------------------
 parseStringType :: Parser MapKey
 parseStringType = StringKey <$> protoName
 
 parseScalarType :: Parser ScalarType
 parseScalarType =
-  do
-    intType <- try parseIntType
-    return (IntType intType)
+  (IntType <$> try parseIntType)
     <|> try (string "double" >> return (FloatType Double))
     <|> try (string "float" >> return (FloatType Float))
     <|> try (string "string" >> return StringType)
     <|> try (string "bytes" >> return BytesType)
 
-----------------------------------------------------------------
-
 parseMap :: Parser DataType
-parseMap = do
-  spaces'
-  _ <- string "map"
-  spaces'
-  _ <- char '<'
-  spaces'
-  key <-
-    IntKey
-      <$> parseIntType
-      <|> StringKey
-        <$> protoName
-  spaces'
-  _ <- char ','
-  value <- MapName <$> protoName
-  spaces'
-  _ <- char '>'
-  spaces'
-  return (Map key value)
+parseMap =
+  Map
+    <$> ( string "map"
+            *> spaces'
+            *> char '<'
+            *> spaces'
+            *> (IntKey <$> parseIntType <|> StringKey <$> protoName)
+        )
+    <*> ( spaces'
+            *> char ','
+            *> spaces'
+            *> (MapName <$> protoName)
+            <* spaces'
+            <* char '>'
+            <* spaces'
+        )
 
 parseDataType :: Parser DataType
 parseDataType =
-  do
-    Scalar <$> parseScalarType
+  Scalar <$> parseScalarType
     <|> Compound <$> protoName

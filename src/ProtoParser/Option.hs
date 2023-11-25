@@ -18,5 +18,17 @@ parseOption' p = do
 parseOption :: Parser Option
 parseOption =
   Option
-    <$> (spaces' *> string "option" *> spaces1 *> protoName <* spaces1)
-    <*> (spaces' *> char '=' *> spaces' *> char '\"' *> (anyChar `manyTill` char '"') <* spaces' <* char ';')
+    <$> ( spaces'
+            *> string "option"
+            *> spaces1
+            *> protoName
+            <* spaces1
+        )
+    <*> ( spaces'
+            *> char '='
+            *> spaces'
+            *> char '\"'
+            *> (anyChar `manyTill` char '"')
+            <* spaces'
+            <* char ';'
+        )

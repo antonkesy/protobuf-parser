@@ -21,6 +21,7 @@ parsePackage' p = do
 parsePackage :: Parser Package
 parsePackage = do
   spaces'
-  _ <- string "package" <?> "Expected package keyword"
-  spaces1
-  anyChar `manyTill` char ';' <?> "Expected package name followed by ';'"
+    *> string "package"
+    *> spaces1
+    *> (anyChar `manyTill` char ';')
+    <* spaces'

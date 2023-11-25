@@ -18,12 +18,11 @@ pathExtension :: String
 pathExtension = ".proto"
 
 parseImport :: Parser ImportPath
-parseImport = do
+parseImport =
   spaces'
-  _ <- string "import" <?> "Expected import keyword"
-  spaces1
-  _ <- char '"' <?> "Expected '\"' after import keyword"
-  path <- anyChar `manyTill` string (pathExtension ++ "\"")
-  spaces'
-  _ <- char ';' <?> "Expected ';' at end of import statement"
-  return (path ++ pathExtension)
+    *> (string "import" <?> "Expected import keyword")
+    *> spaces1
+    *> (char '"' <?> "Expected '\"' after import keyword")
+    *> ((++ pathExtension) <$> (anyChar `manyTill` string (pathExtension ++ "\"")))
+    <* spaces'
+    <* char ';'

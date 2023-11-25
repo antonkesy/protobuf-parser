@@ -1,7 +1,7 @@
 module ProtoParser.Enum
-  ( protoEnum,
+  ( parseEnum,
     parseEnum',
-    enumField,
+    parseEnumField,
     enumNumber,
     enumNumberRange,
     protoName,
@@ -10,7 +10,7 @@ module ProtoParser.Enum
 where
 
 import ProtoParser.Reserved
-import ProtoParser.Space (spaces')
+import ProtoParser.Space (spaces', spaces1)
 import ProtoParser.Type
 import Protobuf
 import Text.Parsec
@@ -18,55 +18,53 @@ import Text.Parsec.String
 
 parseEnum' :: Protobuf -> Parser Protobuf
 parseEnum' p = do
-  x <- protoEnum
+  x <- parseEnum
   return
     ( Protobuf.merge
         p
         (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [x], messages = [], services = []})
     )
 
-protoEnum :: Parser Protobuf.Enum
-protoEnum = do
-  spaces'
-  _ <- string "enum" <?> "Expected enum keyword"
-  spaces'
-  name <- protoName <?> "Expected enum name"
-  spaces'
-  _ <- char '{' <?> ("Expected '{' after enum name" ++ name)
-  spaces'
-  values <- try enumField `sepEndBy1` (try (string ";") <|> try (string ";\n")) <?> "Expected at least one enum value"
-  return (Protobuf.Enum name values)
+parseEnum :: Parser Protobuf.Enum
+parseEnum =
+  Protobuf.Enum
+    <$> ( spaces'
+            *> string "enum"
+            *> spaces1
+            *> name
+        )
+    <*> ( spaces'
+            *> char '{'
+            *> spaces'
+            *> fields
+            <* spaces'
+            <* char '}'
+            <* spaces'
+        )
+  where
+    name = protoName
+    fields = try parseEnumField `sepEndBy1` char ';'
 
-enumField :: Parser EnumField
-enumField = do
-  spaces
-  name <- protoName
-  -- TODO: exctact to extra parser functions
-  case name of
-    "option" -> enumOption
-    "reserved" -> enumReserved
-    _ -> do
-      spaces'
-      _ <- char '='
-      spaces'
-      number <- enumNumber
-      spaces'
-      return (EnumValue name number)
-
--- https://protobuf.dev/programming-guides/proto3/#enum
-enumOption :: Parser EnumField
-enumOption = do
-  spaces
-  optionName <- protoName
-  case optionName of
-    "allow_alias" -> do
-      spaces'
-      _ <- char '='
-      spaces'
-      active <- parseBoolOption
-      spaces'
-      return (EnumOption "allow_alias" active)
-    _ -> fail "Unknown option"
+parseEnumField :: Parser EnumField
+parseEnumField =
+  spaces' *> (try reservedField <|> try optionField <|> try valueField)
+  where
+    fieldName = spaces' *> protoName
+    fieldNumber = spaces' *> char '=' *> spaces' *> enumNumber
+    reservedValues =
+      try (ReservedEnumNames <$> reservedNames)
+        <|> try (ReservedEnumNumbers <$> reservedNumbers enumNumber enumNumberRange)
+    valueField =
+      EnumValue
+        <$> fieldName
+        <*> fieldNumber
+    optionField =
+      EnumOption
+        <$> (string "option" *> spaces1 *> protoName)
+        <*> (spaces1 *> char '=' *> spaces' *> parseBoolOption)
+    reservedField =
+      EnumReserved
+        <$> (string "reserved" *> spaces' *> reservedValues)
 
 parseBoolOption :: Parser Bool
 parseBoolOption =
@@ -74,30 +72,16 @@ parseBoolOption =
     <|> (string "false" >> return False)
     <?> "Expected true or false"
 
-enumReserved :: Parser EnumField
-enumReserved = do
-  spaces'
-  try parseReservedNames <|> try parseReservedNumbers
-
-parseReservedNames :: Parser EnumField
-parseReservedNames = do
-  EnumReserved . ReservedEnumNames <$> reservedNames
-
-parseReservedNumbers :: Parser EnumField
-parseReservedNumbers = do
-  numbers <- try (reservedNumbers enumNumber enumNumberRange) `sepEndBy1` char ','
-  return (EnumReserved (ReservedEnumNumbers (concat numbers)))
-
 enumNumber :: Parser EnumNumber
 enumNumber =
-  -- https://protobuf.dev/programming-guides/proto3/#enum
-  let val = (read <$> many1 digit)
-   in do
-        n <- val
-        if n >= (minBound :: EnumNumber) && n <= (maxBound :: EnumNumber)
-          then return n
-          else fail "Number not in valid range"
+  do
+    n <- (read <$> many1 digit)
+    if n >= (minBound :: EnumNumber) && n <= (maxBound :: EnumNumber)
+      then return n
+      else fail "Number not in valid range"
 
 enumNumberRange :: Parser EnumNumber
-enumNumberRange = do
-  enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)
+enumNumberRange =
+  enumNumber
+    <|> try (string "min" >> return 0)
+    <|> try (string "max" >> return 0xFFFFFFFF)

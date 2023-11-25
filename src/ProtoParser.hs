@@ -44,21 +44,19 @@ protoValue = do
   protoValue' emptyProtobuf
 
 protoValue' :: Protobuf -> Parser Protobuf
-protoValue' old = do
-  new <-
-    choice
-      [ try (parsePackage' old),
-        try (parseImport' old),
-        try (parseComment' old),
-        try (parseEnum' old),
-        try (parseMessage' old),
-        try (parseOption' old),
-        try (parseSyntax' old),
-        try (parseService' old)
-      ]
-  isEnd <- try (lookAhead anyChar >> return False) <|> return True
-  if isEnd
-    then do
-      return new
-    else do
-      protoValue' new
+protoValue' old =
+  ( try (parsePackage' old)
+      <|> try (parseImport' old)
+      <|> try (parseComment' old)
+      <|> try (parseEnum' old)
+      <|> try (parseMessage' old)
+      <|> try (parseOption' old)
+      <|> try (parseSyntax' old)
+      <|> try (parseService' old)
+  )
+    >>= \new ->
+      do
+        isEnd <- try (lookAhead anyChar >> return False) <|> return True
+        if isEnd
+          then return new
+          else protoValue' new

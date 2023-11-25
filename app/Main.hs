@@ -1,7 +1,8 @@
 module Main (main) where
 
--- import ProtoParser.Option
+-- import ProtoParser.Enum
 import ProtoParser
+
 -- import Text.Parsec (parse)
 
 -- erro :: String
@@ -13,17 +14,23 @@ import ProtoParser
 --   \}"
 
 -- testMessageReserved :: String
--- testMessageReserved = "option java_package = \"de.test\";"
+-- testMessageReserved = "syntax = \"proto3\";"
 
--- main :: IO ()
--- main = do
-  -- case parse parseOption "" testMessageReserved of
-    -- Left err -> print err
-    -- Right protobuf -> print protobuf
+testMessageReserved :: String
+testMessageReserved =
+  "import \"foo.proto\";\n\
+  \package foobar;\n\
+  \import \"bar.proto\";"
 
 main :: IO ()
 main = do
-  result <- parseProtoFile "test/protofiles/chat.proto"
-  case result of
-    Left err -> putStrLn $ "Parse error: " ++ show err
-    Right protobuf -> putStrLn $ "Successfully parsed: " ++ show protobuf
+  case parseProtobuf testMessageReserved of
+    Left err -> print err
+    Right protobuf -> print protobuf
+
+-- main :: IO ()
+-- main = do
+--   result <- parseProtoFile "test/protofiles/chat.proto"
+--   case result of
+--     Left err -> putStrLn $ "Parse error: " ++ show err
+--     Right protobuf -> putStrLn $ "Successfully parsed: " ++ show protobuf

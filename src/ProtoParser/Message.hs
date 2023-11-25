@@ -23,15 +23,31 @@ parseMessage = parseMessage''
 parseMessage'' :: Parser Message
 parseMessage'' =
   Message
-    <$> (spaces' *> string "message" *> spaces1 *> name)
-    <*> (spaces' *> char '{' *> spaces' *> fields <* spaces' <* char '}' <* spaces')
+    <$> ( spaces'
+            *> string "message"
+            *> spaces1
+            *> protoName
+        )
+    <*> ( spaces'
+            *> char '{'
+            *> spaces'
+            *> fields
+            <* spaces'
+            <* char '}'
+            <* spaces'
+        )
   where
-    name = protoName
     fields = try parseMessageField `sepEndBy` char ';'
 
 parseMessageField :: Parser MessageField
 parseMessageField =
-  spaces' *> (try implicitField <|> try optionalField <|> try repeatedField <|> try reservedField <|> try oneofField)
+  spaces'
+    *> ( try implicitField
+           <|> try optionalField
+           <|> try repeatedField
+           <|> try reservedField
+           <|> try oneofField
+       )
   where
     fieldName = spaces' *> protoName
     fieldNumber = spaces' *> char '=' *> spaces' *> protoNumber
@@ -46,21 +62,40 @@ parseMessageField =
         <*> fieldNumber
     optionalField =
       OptionalMessageField
-        <$> (string "optional" *> spaces' *> (try parseDataType <|> try parseMap))
+        <$> ( string "optional"
+                *> spaces'
+                *> (try parseDataType <|> try parseMap)
+            )
         <*> fieldName
         <*> fieldNumber
     repeatedField =
       RepeatedMessageField
-        <$> (string "repeated" *> spaces' *> parseDataType) -- maps not allowed in repeated fields
+        <$> ( string "repeated"
+                *> spaces'
+                *> parseDataType -- maps not allowed in repeated fields
+            )
         <*> fieldName
         <*> fieldNumber
     reservedField =
       MessageReserved
-        <$> (string "reserved" *> spaces' *> reservedValues)
+        <$> ( string "reserved"
+                *> spaces'
+                *> reservedValues
+            )
     oneofField =
       OneOfMessageField
-        <$> (string "oneof" *> spaces' *> protoName)
-        <*> (spaces' *> char '{' *> spaces' *> fields <* spaces' <* char '}' <* spaces')
+        <$> ( string "oneof"
+                *> spaces'
+                *> protoName
+            )
+        <*> ( spaces'
+                *> char '{'
+                *> spaces'
+                *> fields
+                <* spaces'
+                <* char '}'
+                <* spaces'
+            )
 
 fieldNumberRange :: Parser FieldNumber
 fieldNumberRange = do

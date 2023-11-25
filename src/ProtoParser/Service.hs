@@ -1,6 +1,5 @@
 module ProtoParser.Service (parseService, parseService') where
 
-import Data.Maybe (catMaybes)
 import ProtoParser.Space (spaces', spaces1)
 import ProtoParser.Type
 import Protobuf
@@ -17,55 +16,48 @@ parseService' p = do
     )
 
 parseService :: Parser Service
-parseService = do
-  parseService''
-
-parseService'' :: Parser Service
-parseService'' = do
-  spaces'
-  _ <- string "service"
-  spaces1
-  name <- protoName
-  spaces'
-  _ <- char '{'
-  spaces'
-  fields <- try parseServiceField `sepEndBy1` (lookAhead anyChar)
-  spaces'
-  _ <- char '}'
-  return (Service name (catMaybes fields))
-
-parseServiceField :: Parser (Maybe RPC)
-parseServiceField = do
-  spaces'
-  _ <- string "rpc"
-  spaces1
-  name <- protoName
-  spaces'
-  _ <- char '('
-  spaces'
-  isRequestStream <- option False (string "stream" >> spaces1 >> return True)
-  request <- protoName
-  spaces'
-  _ <- char ')'
-  spaces'
-  _ <- string "returns"
-  spaces'
-  _ <- char '('
-  spaces'
-  isReplyStream <- option False (string "stream" >> spaces1 >> return True)
-  reply <- protoName
-  spaces'
-  _ <- char ')'
-  spaces'
-  _ <- char '{'
-  spaces'
-  _ <- char '}'
-  spaces'
-  return
-    ( Just
-        ( RPC
-            name
-            (if isRequestStream then RequestTypeStream request else RequestType request)
-            (if isReplyStream then ReplyTypeStream reply else ReplyType reply)
+parseService =
+  Service
+    <$> ( spaces'
+            *> string "service"
+            *> spaces1
+            *> protoName
         )
-    )
+    <*> ( spaces'
+            *> char '{'
+            *> spaces'
+            *> (try parseServiceField `sepEndBy1` (lookAhead anyChar))
+            <* spaces'
+            <* char '}'
+        )
+
+parseServiceField :: Parser RPC
+parseServiceField =
+  RPC
+    <$> (spaces' *> string "rpc" *> spaces1 *> protoName)
+    <*> ( spaces'
+            *> char '('
+            *> spaces'
+            *> (try requestStream <|> request)
+            <* spaces'
+            <* char ')'
+        )
+    <*> ( spaces'
+            *> string "returns"
+            *> spaces'
+            *> char '('
+            *> spaces'
+            *> (try replyStream <|> reply)
+            <* spaces'
+            <* char ')'
+        )
+    <* spaces'
+    <* char '{'
+    <* spaces'
+    <* char '}'
+    <* spaces'
+  where
+    request = RequestType <$> protoName
+    requestStream = string "stream" *> spaces1 *> (RequestTypeStream <$> protoName)
+    reply = ReplyType <$> protoName
+    replyStream = string "stream" *> spaces1 *> (ReplyTypeStream <$> protoName)

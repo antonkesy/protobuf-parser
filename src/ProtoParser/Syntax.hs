@@ -19,17 +19,16 @@ parseSyntax' p = do
         )
 
 parseSyntax :: Parser Syntax
-parseSyntax = do
+parseSyntax =
   spaces'
-  _ <- string "syntax" <?> "Expected 'syntax' keyword"
-  spaces'
-  _ <- char '=' <?> "Expected '=' after 'syntax' keyword"
-  spaces'
-  _ <- char '"' <?> "Expected '\"' after 'syntax' keyword"
-  syn <-
-    try (string "proto2" >> return Proto2)
-      <|> try (string "proto3" >> return Proto3)
-  spaces'
-  _ <- char '"' <?> "Expected '\"' after 'syntax' value"
-  _ <- char ';' <?> "Expected ';' at end of syntax statement"
-  return syn
+    *> string "syntax"
+    *> spaces'
+    *> char '='
+    *> spaces'
+    *> char '"'
+    *> ( (try (string "proto2") >> return Proto2)
+           <|> (try (string "proto3") >> return Proto3)
+       )
+    <* char '"'
+    <* spaces'
+    <* char ';'
