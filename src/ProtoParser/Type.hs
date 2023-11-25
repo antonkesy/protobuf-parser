@@ -71,32 +71,6 @@ parseScalarType =
 
 ----------------------------------------------------------------
 
--- parseMap :: Parser MessageField
--- parseMap = do
---   spaces'
---   _ <- string "map"
---   spaces'
---   _ <- char '<'
---   spaces'
---   key <-
---     IntKey
---       <$> parseIntType
---       <|> StringKey
---         <$> protoName
---   spaces'
---   _ <- char ','
---   value <- MapName <$> protoName
---   spaces'
---   _ <- char '>'
---   spaces'
---   name <- protoName
---   spaces'
---   _ <- char '='
---   spaces'
---   fieldNumber <- protoNumber
---   -- cannot be repeated
---   return (ImplicitMessageField (Map key value) name fieldNumber)
-
 parseMap :: Parser DataType
 parseMap = do
   spaces'
@@ -116,3 +90,9 @@ parseMap = do
   _ <- char '>'
   spaces'
   return (Map key value)
+
+parseDataType :: Parser DataType
+parseDataType =
+  do
+    Scalar <$> parseScalarType
+    <|> Compound <$> protoName

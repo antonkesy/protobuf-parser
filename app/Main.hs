@@ -14,7 +14,7 @@ import Text.Parsec (parse)
 testMessageReserved :: String
 testMessageReserved =
   "message Foo {\
-  \reserved 1, 2;\
+  \reserved \"foo\", \"bar\";\
   \}"
 
 main :: IO ()

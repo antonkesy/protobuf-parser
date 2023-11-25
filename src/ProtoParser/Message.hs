@@ -21,98 +21,41 @@ parseMessage :: Parser Message
 parseMessage = parseMessage''
 
 parseMessage'' :: Parser Message
-parseMessage'' = do
-  spaces'
-  _ <- string "message"
-  spaces1
-  name <- protoName
-  spaces'
-  _ <- char '{'
-  spaces'
-  fields <- try parseMessageField `sepEndBy` char ';'
-  spaces'
-  _ <- char '}'
-  spaces'
-  return (Message name fields)
-
-parseDataType :: Parser DataType
-parseDataType =
-  do
-    Scalar <$> parseScalarType
-    <|> Compound <$> protoName
+parseMessage'' =
+  Message
+    <$> (spaces' *> string "message" *> spaces1 *> name)
+    <*> (spaces' *> char '{' *> spaces' *> fields <* spaces' <* char '}' <* spaces')
+  where
+    name = protoName
+    fields = try parseMessageField `sepEndBy` char ';'
 
 parseMessageField :: Parser MessageField
 parseMessageField =
-  do
-    try implicitMessageField
-    <|> try optionalMessageField
-    <|> try repeatedMessageField
-    <|> try reservedMessageField
-
-implicitMessageField :: Parser MessageField
-implicitMessageField = do
-  spaces'
-  t <- parseDataType <|> parseMap
-  spaces'
-  name <- protoName
-  spaces'
-  _ <- char '='
-  spaces'
-  fieldNumber <- protoNumber
-  spaces'
-  return (ImplicitMessageField t name fieldNumber)
-
-optionalMessageField :: Parser MessageField
-optionalMessageField = do
-  spaces'
-  _ <- string "optional"
-  spaces'
-  t <- parseDataType <|> parseMap
-  spaces'
-  name <- protoName
-  spaces'
-  _ <- char '='
-  spaces'
-  fieldNumber <- protoNumber
-  spaces'
-  return (OptionalMessageField t name fieldNumber)
-
-repeatedMessageField :: Parser MessageField
-repeatedMessageField = do
-  spaces'
-  _ <- string "repeated"
-  spaces'
-  t <- parseDataType
-  spaces'
-  name <- protoName
-  spaces'
-  _ <- char '='
-  spaces'
-  fieldNumber <- protoNumber
-  spaces'
-  return (RepeatedMessageField t name fieldNumber)
-
-reservedMessageField :: Parser MessageField
-reservedMessageField = do
-  spaces'
-  _ <- string "reserved"
-  spaces'
-  try parseReservedNames <|> try parseReservedNumbers
-
-----------------------------------------------------------------
-
--- TODO: one of
-
-----------------------------------------------------------------
-
-parseReservedNames :: Parser MessageField
-parseReservedNames = do
-  MessageReserved . ReservedMessageNames <$> reservedNames
-
-parseReservedNumbers :: Parser MessageField
-parseReservedNumbers = do
-  numbers <- try (reservedNumbers protoNumber fieldNumberRange) `sepEndBy1` char ','
-  return (MessageReserved (ReservedMessageNumbers (concat numbers)))
+  spaces' *> (try implicitField <|> try optionalField <|> try repeatedField <|> try reservedField)
+  where
+    fieldName = spaces' *> protoName
+    fieldNumber = spaces' *> char '=' *> spaces' *> protoNumber
+    reservedValues =
+      try (ReservedMessageNames <$> reservedNames)
+        <|> try (ReservedMessageNumbers <$> reservedNumbers protoNumber fieldNumberRange)
+    implicitField =
+      ImplicitMessageField
+        <$> (try parseDataType <|> try parseMap)
+        <*> fieldName
+        <*> fieldNumber
+    optionalField =
+      OptionalMessageField
+        <$> (string "optional" *> spaces' *> (try parseDataType <|> try parseMap))
+        <*> fieldName
+        <*> fieldNumber
+    repeatedField =
+      RepeatedMessageField
+        <$> (string "repeated" *> spaces' *> parseDataType) -- maps not allowed in repeated fields
+        <*> fieldName
+        <*> fieldNumber
+    reservedField =
+      MessageReserved
+        <$> (string "reserved" *> spaces' *> reservedValues)
 
 fieldNumberRange :: Parser FieldNumber
 fieldNumberRange = do
