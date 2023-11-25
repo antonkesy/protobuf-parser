@@ -35,41 +35,75 @@ parseMessage'' = do
   spaces'
   return (Message name fields)
 
-parseMessageField :: Parser MessageField
-parseMessageField = do
-  spaces'
-  -- _ <- try (string "repeated") -- TODO: optional
-  -- spaces'
-  -- TODO: extra function parser for reserved to avoid this workaround
-  t <- parseDataType
-  case t of
-    (Compound "reserved") -> messageReserved
-    _ -> do
-      spaces'
-      name <- protoName
-      spaces'
-      _ <- char '='
-      spaces'
-      fieldNumber <- protoNumber
-      spaces'
-      return (MessageField t name fieldNumber False)
-
 parseDataType :: Parser DataType
 parseDataType =
   do
     Scalar <$> parseScalarType
     <|> Compound <$> protoName
 
+parseMessageField :: Parser MessageField
+parseMessageField =
+  do
+    try implicitMessageField
+    <|> try optionalMessageField
+    <|> try repeatedMessageField
+    <|> try reservedMessageField
+
+implicitMessageField :: Parser MessageField
+implicitMessageField = do
+  spaces'
+  t <- parseDataType <|> parseMap
+  spaces'
+  name <- protoName
+  spaces'
+  _ <- char '='
+  spaces'
+  fieldNumber <- protoNumber
+  spaces'
+  return (ImplicitMessageField t name fieldNumber)
+
+optionalMessageField :: Parser MessageField
+optionalMessageField = do
+  spaces'
+  _ <- string "optional"
+  spaces'
+  t <- parseDataType <|> parseMap
+  spaces'
+  name <- protoName
+  spaces'
+  _ <- char '='
+  spaces'
+  fieldNumber <- protoNumber
+  spaces'
+  return (OptionalMessageField t name fieldNumber)
+
+repeatedMessageField :: Parser MessageField
+repeatedMessageField = do
+  spaces'
+  _ <- string "repeated"
+  spaces'
+  t <- parseDataType
+  spaces'
+  name <- protoName
+  spaces'
+  _ <- char '='
+  spaces'
+  fieldNumber <- protoNumber
+  spaces'
+  return (RepeatedMessageField t name fieldNumber)
+
+reservedMessageField :: Parser MessageField
+reservedMessageField = do
+  spaces'
+  _ <- string "reserved"
+  spaces'
+  try parseReservedNames <|> try parseReservedNumbers
+
 ----------------------------------------------------------------
 
 -- TODO: one of
 
 ----------------------------------------------------------------
-
-messageReserved :: Parser MessageField
-messageReserved = do
-  spaces'
-  try parseReservedNames <|> try parseReservedNumbers
 
 parseReservedNames :: Parser MessageField
 parseReservedNames = do

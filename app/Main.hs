@@ -1,6 +1,6 @@
 module Main (main) where
 
-import ProtoParser.Syntax
+import ProtoParser.Message
 import Text.Parsec (parse)
 
 -- erro :: String
@@ -11,11 +11,17 @@ import Text.Parsec (parse)
 --   \reserved 1, 2;\
 --   \}"
 
+testMessageReserved :: String
+testMessageReserved =
+  "message Foo {\
+  \reserved 1, 2;\
+  \}"
+
 main :: IO ()
 main = do
-  case parse parseSyntax "" "syntax = \"proto2\";" of
-    Left err -> putStrLn $ "Parse error: " ++ show err
-    Right protobuf -> putStrLn $ "Successfully parsed: " ++ show protobuf
+  case parse parseMessage "" testMessageReserved of
+    Left err -> print err
+    Right protobuf -> print protobuf
 
 -- main :: IO ()
 -- main = do

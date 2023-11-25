@@ -69,7 +69,9 @@ data DataType
   deriving (Show, Eq)
 
 data MessageField
-  = MessageField DataType Name FieldNumber Repeat
+  = ImplicitMessageField DataType Name FieldNumber
+  | OptionalMessageField DataType Name FieldNumber
+  | RepeatedMessageField DataType Name FieldNumber
   | MessageReserved MessageReservedValues
   deriving (Show, Eq)
 

@@ -71,7 +71,33 @@ parseScalarType =
 
 ----------------------------------------------------------------
 
-parseMap :: Parser MessageField
+-- parseMap :: Parser MessageField
+-- parseMap = do
+--   spaces'
+--   _ <- string "map"
+--   spaces'
+--   _ <- char '<'
+--   spaces'
+--   key <-
+--     IntKey
+--       <$> parseIntType
+--       <|> StringKey
+--         <$> protoName
+--   spaces'
+--   _ <- char ','
+--   value <- MapName <$> protoName
+--   spaces'
+--   _ <- char '>'
+--   spaces'
+--   name <- protoName
+--   spaces'
+--   _ <- char '='
+--   spaces'
+--   fieldNumber <- protoNumber
+--   -- cannot be repeated
+--   return (ImplicitMessageField (Map key value) name fieldNumber)
+
+parseMap :: Parser DataType
 parseMap = do
   spaces'
   _ <- string "map"
@@ -81,17 +107,12 @@ parseMap = do
   key <-
     IntKey
       <$> parseIntType
-        <|> StringKey
-      <$> protoName
+      <|> StringKey
+        <$> protoName
   spaces'
   _ <- char ','
   value <- MapName <$> protoName
   spaces'
   _ <- char '>'
   spaces'
-  name <- protoName
-  spaces'
-  _ <- char '='
-  spaces'
-  fieldNumber <- protoNumber
-  return (MessageField (Map key value) name fieldNumber False)
+  return (Map key value)

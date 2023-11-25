@@ -24,8 +24,8 @@ testMessage1Proto :: Message
 testMessage1Proto =
   Message
     "Foo"
-    [ MessageField (Scalar (IntType Int32)) "foo" 1 False,
-      MessageField (Scalar (FloatType Double)) "bar" 2 False
+    [ ImplicitMessageField (Scalar (IntType Int32)) "foo" 1,
+      ImplicitMessageField (Scalar (FloatType Double)) "bar" 2
     ]
 
 testMessageReserved :: String
@@ -41,6 +41,45 @@ testMessageReservedProto =
     [ MessageReserved (ReservedMessageNumbers [1, 2])
     ]
 
+testOptional :: String
+testOptional =
+  "message Foo {\
+  \optional int32 foo = 1;\
+  \}"
+
+testOptionalProto :: Message
+testOptionalProto =
+  Message
+    "Foo"
+    [ OptionalMessageField (Scalar (IntType Int32)) "foo" 1
+    ]
+
+testRepeated :: String
+testRepeated =
+  "message Foo {\
+  \repeated int32 foo = 1;\
+  \}"
+
+testRepeatedProto :: Message
+testRepeatedProto =
+  Message
+    "Foo"
+    [ RepeatedMessageField (Scalar (IntType Int32)) "foo" 1
+    ]
+
+testReservedNames :: String
+testReservedNames =
+  "message Foo {\
+  \reserved \"foo\", \"bar\";\
+  \}"
+
+testReservedNamesProto :: Message
+testReservedNamesProto =
+  Message
+    "Foo"
+    [ MessageReserved (ReservedMessageNames (ReservedNames ["foo", "bar"]))
+    ]
+
 testSimple :: Test
 testSimple = TestCase $ do
   assertEqual "empty" False (isRight (parse parseMessage "" ""))
@@ -49,3 +88,6 @@ testSimple = TestCase $ do
   assertEqual "emptyMessage" (Message "Foo" []) (fromRight failMessage (parse parseMessage "" "message Foo {}"))
   assertEqual "simple" testMessage1Proto (fromRight failMessage (parse parseMessage "" testMessage1))
   assertEqual "reserved" testMessageReservedProto (fromRight failMessage (parse parseMessage "" testMessageReserved))
+  assertEqual "optional" testOptionalProto (fromRight failMessage (parse parseMessage "" testOptional))
+  assertEqual "repeated" testRepeatedProto (fromRight failMessage (parse parseMessage "" testRepeated))
+  assertEqual "reserved names" testReservedNamesProto (fromRight failMessage (parse parseMessage "" testReservedNames))

@@ -48,8 +48,8 @@ testSclarType = TestCase $ do
 
 ----------------------------------------------------------------
 
-defaulTestMap :: MessageField
-defaulTestMap = MessageField (Map (StringKey "") (MapName "")) "TEST" 0 False
+defaulTestMap :: DataType
+defaulTestMap = Map (StringKey "") (MapName "")
 
 testMap :: Test
 testMap = TestCase $ do
@@ -57,11 +57,9 @@ testMap = TestCase $ do
   assertEqual "keyword only" False (isRight (parse parseMap "" "map"))
   assertEqual
     "Simple"
-    ( MessageField (Map (StringKey "T") (MapName "V")) "name" 2 False
-    )
-    (fromRight defaulTestMap (parse parseMap "" "map<T,V> name = 2"))
+    (Map (StringKey "T") (MapName "V"))
+    (fromRight defaulTestMap (parse parseMap "" "map<T,V>"))
   assertEqual
     "Simple"
-    ( MessageField (Map (IntKey Int32) (MapName "V")) "name" 2 False
-    )
-    (fromRight defaulTestMap (parse parseMap "" "map<int32,V> name = 2"))
+    (Map (IntKey Int32) (MapName "V"))
+    (fromRight defaulTestMap (parse parseMap "" "map<int32,V>"))

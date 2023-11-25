@@ -31,8 +31,8 @@ testFiles = TestCase $ do
           messages =
             [ Message
                 "SearchRequest"
-                [ MessageField (Scalar (IntType Int32)) "page_number" 2 False,
-                  MessageField (Scalar (FloatType Double)) "results_per_page" 3 False
+                [ ImplicitMessageField (Scalar (IntType Int32)) "page_number" 2,
+                  ImplicitMessageField (Scalar (FloatType Double)) "results_per_page" 3
                 ]
             ],
           services = []
@@ -49,12 +49,12 @@ testFiles = TestCase $ do
           messages =
             [ Message
                 "SearchRequest"
-                [ MessageField (Scalar (IntType Int32)) "page_number" 2 False,
-                  MessageField (Scalar (FloatType Double)) "results_per_page" 3 False
+                [ ImplicitMessageField (Scalar (IntType Int32)) "page_number" 2,
+                  ImplicitMessageField (Scalar (FloatType Double)) "results_per_page" 3
                 ],
               Message
                 "SearchResponse"
-                [ MessageField (Scalar StringType) "name" 1 False
+                [ ImplicitMessageField (Scalar StringType) "name" 1
                 ]
             ],
           services = []
