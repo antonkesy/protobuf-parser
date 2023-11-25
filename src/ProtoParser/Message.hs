@@ -18,8 +18,7 @@ parseMessage' p = do
     )
 
 parseMessage :: Parser Message
-parseMessage = do
-  parseMessage''
+parseMessage = parseMessage''
 
 parseMessage'' :: Parser Message
 parseMessage'' = do
@@ -44,7 +43,7 @@ parseMessageField = do
   -- TODO: extra function parser for reserved to avoid this workaround
   t <- parseDataType
   case t of
-    (Compound "reserved") -> do messageReserved
+    (Compound "reserved") -> messageReserved
     _ -> do
       spaces'
       name <- protoName
@@ -74,8 +73,7 @@ messageReserved = do
 
 parseReservedNames :: Parser MessageField
 parseReservedNames = do
-  names <- reservedNames
-  return (MessageReserved (ReservedMessageNames names))
+  MessageReserved . ReservedMessageNames <$> reservedNames
 
 parseReservedNumbers :: Parser MessageField
 parseReservedNumbers = do
@@ -84,5 +82,4 @@ parseReservedNumbers = do
 
 fieldNumberRange :: Parser FieldNumber
 fieldNumberRange = do
-  n <- protoNumber <|> try (string "min" >> return 1) <|> try (string "max" >> return 0xFFFFFFFF)
-  return n
+  protoNumber <|> try (string "min" >> return 1) <|> try (string "max" >> return 0xFFFFFFFF)

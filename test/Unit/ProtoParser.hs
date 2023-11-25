@@ -33,7 +33,7 @@ splitImportText =
 splitImportProto :: Protobuf
 splitImportProto =
   ( Protobuf
-      { package = (Just "foobar"),
+      { package = Just "foobar",
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],
@@ -87,7 +87,7 @@ testText = TestCase $ do
 textComment :: Protobuf
 textComment =
   ( Protobuf
-      { package = (Just "foobar"),
+      { package = Just "foobar",
         imports = ["foo.proto", "bar.proto"],
         options = [],
         enums = [],

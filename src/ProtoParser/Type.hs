@@ -34,18 +34,17 @@ protoNumber =
 
 parseIntType :: Parser IntType
 parseIntType =
-  let int32 = string "int32" >> return (Int32)
-      int64 = string "int64" >> return (Int64)
-      uint32 = string "uint32" >> return (UInt32)
-      uint64 = string "uint64" >> return (UInt64)
-      sint32 = string "sint32" >> return (SInt32)
-      sint64 = string "sint64" >> return (SInt64)
-      fixed32 = string "fixed32" >> return (Fixed32)
-      fixed64 = string "fixed64" >> return (Fixed64)
-      sfixed32 = string "sfixed32" >> return (SFixed32)
-      sfixed64 = string "sfixed64" >> return (SFixed64)
-   in do
-        int32
+  let int32 = string "int32" >> return Int32
+      int64 = string "int64" >> return Int64
+      uint32 = string "uint32" >> return UInt32
+      uint64 = string "uint64" >> return UInt64
+      sint32 = string "sint32" >> return SInt32
+      sint64 = string "sint64" >> return SInt64
+      fixed32 = string "fixed32" >> return Fixed32
+      fixed64 = string "fixed64" >> return Fixed64
+      sfixed32 = string "sfixed32" >> return SFixed32
+      sfixed64 = string "sfixed64" >> return SFixed64
+   in int32
         <|> int64
         <|> uint32
         <|> uint64
@@ -58,8 +57,7 @@ parseIntType =
 
 ----------------------------------------------------------------
 parseStringType :: Parser MapKey
-parseStringType = do
-  StringKey <$> protoName
+parseStringType = StringKey <$> protoName
 
 parseScalarType :: Parser ScalarType
 parseScalarType =

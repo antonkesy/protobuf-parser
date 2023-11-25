@@ -1,11 +1,11 @@
 import "foo.proto";
 import "bar.proto";
 
-package bar;
+package foobar;
 
 message SearchRequest {
   int32 page_number = 2;
-  int32 results_per_page = 3;
+  double results_per_page = 3;
 }
 
 message SearchResponse {

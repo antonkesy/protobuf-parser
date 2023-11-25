@@ -1,6 +1,7 @@
 import Test.HUnit (Test (TestList), runTestTTAndExit)
 import Unit.Comment as Comment
 import Unit.Enum as Unit
+import Unit.Files as Files
 import Unit.Import as Import
 import Unit.Message as Message
 import Unit.Package as Package
@@ -20,5 +21,6 @@ main =
             ++ Message.allTests
             ++ Package.allTests
             ++ Service.allTests
+            ++ Files.allTests
         )
     )

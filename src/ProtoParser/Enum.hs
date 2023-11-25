@@ -43,8 +43,8 @@ enumField = do
   name <- protoName
   -- TODO: exctact to extra parser functions
   case name of
-    "option" -> do enumOption
-    "reserved" -> do enumReserved
+    "option" -> enumOption
+    "reserved" -> enumReserved
     _ -> do
       spaces'
       _ <- char '='
@@ -81,8 +81,7 @@ enumReserved = do
 
 parseReservedNames :: Parser EnumField
 parseReservedNames = do
-  names <- reservedNames
-  return (EnumReserved (ReservedEnumNames names))
+  EnumReserved . ReservedEnumNames <$> reservedNames
 
 parseReservedNumbers :: Parser EnumField
 parseReservedNumbers = do
@@ -101,5 +100,4 @@ enumNumber =
 
 enumNumberRange :: Parser EnumNumber
 enumNumberRange = do
-  n <- enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)
-  return n
+  enumNumber <|> try (string "min" >> return 0) <|> try (string "max" >> return 0xFFFFFFFF)

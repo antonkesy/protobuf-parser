@@ -47,7 +47,7 @@ reservedNumbersRange range = do
 reservedNumbers :: (Integral a) => Parser a -> Parser a -> Parser [a]
 reservedNumbers single range = do
   numbers <- try (reservedNumbers' single range) `sepBy1` char ','
-  return ((concat numbers))
+  return (concat numbers)
 
 reservedNumbers' :: (Integral a) => Parser a -> Parser a -> Parser [a]
 reservedNumbers' single range = try (reservedNumbersRange range) <|> try (reservedNumbersSingle single)
