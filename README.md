@@ -8,5 +8,8 @@ no checks for correctness of values -> only syntax
 
 Applicative style <*>, *>, ...
 
+TODO: rework according to https://protobuf.dev/reference/protobuf/proto3-spec/
+TODO: add documentation
+
 `stack run`
 `stack test`
