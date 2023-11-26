@@ -1,9 +1,9 @@
-module Unit.Comment (allTests) where
+module Unit.Text.Protobuf.Parser.Comment (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser.Comment
 import Test.HUnit
 import Text.Parsec (parse)
+import Text.Protobuf.Parser.Comment
 
 allTests :: [Test]
 allTests =

@@ -1,16 +1,16 @@
-module ProtoParser.Option (parseOption, parseOption', parseFieldOption) where
+module Text.Protobuf.Parser.Option (parseOption, parseOption', parseFieldOption) where
 
-import ProtoParser.Space (spaces', spaces1)
-import ProtoParser.Type (parseBool, parseCustomName, parseString, protoName)
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces', spaces1)
+import Text.Protobuf.Parser.Type (parseBool, parseCustomName, parseString, protoName)
+import Text.Protobuf.Types
 
 parseOption' :: Protobuf -> Parser Protobuf
 parseOption' p = do
   opt <- parseOption
   return
-    ( Protobuf.merge
+    ( Text.Protobuf.Types.merge
         p
         (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [opt], enums = [], messages = [], services = []})
     )

@@ -1,19 +1,19 @@
-module ProtoParser.Message (parseMessage, parseMessage') where
+module Text.Protobuf.Parser.Message (parseMessage, parseMessage') where
 
-import ProtoParser.Option
-import ProtoParser.Reserved
-import ProtoParser.Space (spaces', spaces1)
-import ProtoParser.Type
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Option
+import Text.Protobuf.Parser.Reserved
+import Text.Protobuf.Parser.Space (spaces', spaces1)
+import Text.Protobuf.Parser.Type
+import Text.Protobuf.Types
 
 parseMessage' :: Protobuf -> Parser Protobuf
 parseMessage' p = do
   x <- parseMessage
   -- TODO: check for validity of message?
   return
-    ( Protobuf.merge
+    ( Text.Protobuf.Types.merge
         p
         (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [], messages = [x], services = []})
     )

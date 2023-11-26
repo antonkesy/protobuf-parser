@@ -1,6 +1,6 @@
 {-# LANGUAGE GADTs #-}
 
-module Protobuf (module Protobuf) where
+module Text.Protobuf.Types (module Text.Protobuf.Types) where
 
 import Data.Word (Word32)
 import Prettyprinter
@@ -149,7 +149,7 @@ data Protobuf = Protobuf
     package :: Maybe String,
     imports :: [ImportPath],
     options :: [Option],
-    enums :: [Protobuf.Enum],
+    enums :: [Text.Protobuf.Types.Enum],
     messages :: [Message],
     services :: [Service]
   }
@@ -172,7 +172,7 @@ emptyProtobuf =
 ------------------------------------------------------------
 
 merge' :: [Protobuf] -> Protobuf
-merge' = foldl1 Protobuf.merge
+merge' = foldl1 Text.Protobuf.Types.merge
 
 merge :: Protobuf -> Protobuf -> Protobuf
 merge a b =
@@ -308,7 +308,7 @@ instance Pretty EnumField where
   pretty (EnumOption name value) = pretty name <+> pretty "=" <+> pretty value
   pretty (EnumReserved values) = pretty values
 
-instance Pretty Protobuf.Enum where
+instance Pretty Text.Protobuf.Types.Enum where
   pretty (Enum name fields) =
     vsep [pretty "enum" <+> pretty name <+> pretty "{", indent 2 (vsep (map pretty fields)), pretty "}"]
 

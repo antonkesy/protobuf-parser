@@ -1,4 +1,4 @@
-module ProtoParser.Comment
+module Text.Protobuf.Parser.Comment
   ( parseComment,
     parseComment',
     parseSingleLineComment,
@@ -8,10 +8,10 @@ module ProtoParser.Comment
 where
 
 import Control.Monad (void)
-import ProtoParser.EndOfLine (eol)
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.EndOfLine (eol)
+import Text.Protobuf.Types
 
 parseComment' :: Protobuf -> Parser Protobuf
 parseComment' p = do

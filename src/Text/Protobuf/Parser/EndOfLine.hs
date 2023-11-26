@@ -1,4 +1,4 @@
-module ProtoParser.EndOfLine (eol) where
+module Text.Protobuf.Parser.EndOfLine (eol) where
 
 import Control.Monad (void)
 import Text.Parsec

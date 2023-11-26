@@ -1,15 +1,15 @@
+import E2E.Files as Files
 import Test.HUnit (Test (TestList), runTestTTAndExit)
-import Unit.Comment as Comment
-import Unit.Enum as Unit
-import Unit.Files as Files
-import Unit.Import as Import
-import Unit.Message as Message
-import Unit.Option as Option
-import Unit.Package as Package
-import Unit.ProtoParser as Protobuf
-import Unit.Service as Service
-import Unit.Syntax as Syntax
-import Unit.Type as Type
+import Unit.Text.Protobuf as Protobuf
+import Unit.Text.Protobuf.Parser.Comment as Comment
+import Unit.Text.Protobuf.Parser.Enum as Unit
+import Unit.Text.Protobuf.Parser.Import as Import
+import Unit.Text.Protobuf.Parser.Message as Message
+import Unit.Text.Protobuf.Parser.Option as Option
+import Unit.Text.Protobuf.Parser.Package as Package
+import Unit.Text.Protobuf.Parser.Service as Service
+import Unit.Text.Protobuf.Parser.Syntax as Syntax
+import Unit.Text.Protobuf.Parser.Type as Type
 
 main :: IO ()
 main =

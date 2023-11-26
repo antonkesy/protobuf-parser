@@ -1,13 +1,13 @@
-module ProtoParser.Reserved
-  ( module ProtoParser.Reserved,
+module Text.Protobuf.Parser.Reserved
+  ( module Text.Protobuf.Parser.Reserved,
   )
 where
 
-import ProtoParser.Space (spaces')
-import ProtoParser.Type
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces')
+import Text.Protobuf.Types
+import Text.Protobuf.Parser.Type
 
 reservedNames :: Parser ReservedNames
 reservedNames =

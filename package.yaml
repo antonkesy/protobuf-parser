@@ -27,10 +27,10 @@ ghc-options:
   - -Wmissing-home-modules
   - -Wpartial-fields
   - -Wredundant-constraints
-  - -Werror -W -fwarn-unused-imports -fwarn-unused-binds -fwarn-orphans
-  - -fwarn-unused-matches -fwarn-unused-do-bind -fwarn-wrong-do-bind
-  - -fwarn-missing-signatures -fno-warn-partial-type-signatures
-  - -Wredundant-constraints -rtsopts
+  # - -Werror -W -fwarn-unused-imports -fwarn-unused-binds -fwarn-orphans
+  # - -fwarn-unused-matches -fwarn-unused-do-bind -fwarn-wrong-do-bind
+  # - -fwarn-missing-signatures -fno-warn-partial-type-signatures
+  # - -Wredundant-constraints -rtsopts
 
 library:
   source-dirs: src

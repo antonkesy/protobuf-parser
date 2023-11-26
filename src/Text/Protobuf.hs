@@ -1,21 +1,23 @@
-module ProtoParser
+module Text.Protobuf
   ( parseProtobuf,
     parseProtoFile,
   )
 where
 
-import ProtoParser.Comment
-import ProtoParser.Enum
-import ProtoParser.Import
-import ProtoParser.Message
-import ProtoParser.Option
-import ProtoParser.Package
-import ProtoParser.Service
-import ProtoParser.Syntax
-import Protobuf
+-- TODO: rename to Text.Protobuf.Parser
+
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Comment
+import Text.Protobuf.Parser.Enum
+import Text.Protobuf.Parser.Import
+import Text.Protobuf.Parser.Message
+import Text.Protobuf.Parser.Option
+import Text.Protobuf.Parser.Package
+import Text.Protobuf.Parser.Service
+import Text.Protobuf.Parser.Syntax
+import Text.Protobuf.Types
 
 parseProtobuf :: String -> Either ParseError Protobuf
 parseProtobuf = parse protoValue ""

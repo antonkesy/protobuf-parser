@@ -1,10 +1,10 @@
-module Unit.Syntax (allTests) where
+module Unit.Text.Protobuf.Parser.Syntax (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser.Syntax
-import Protobuf
 import Test.HUnit
 import Text.Parsec (parse)
+import Text.Protobuf.Parser.Syntax
+import Text.Protobuf.Types
 
 allTests :: [Test]
 allTests =

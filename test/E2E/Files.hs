@@ -1,9 +1,9 @@
-module Unit.Files (allTests) where
+module E2E.Files (allTests) where
 
 import Data.Either (fromRight)
-import ProtoParser
-import Protobuf
 import Test.HUnit
+import Text.Protobuf
+import Text.Protobuf.Types
 
 allTests :: [Test]
 allTests =
@@ -11,7 +11,7 @@ allTests =
 
 getResult :: FilePath -> IO Protobuf
 getResult fileNameWithoutExtension = do
-  fromRight emptyProtobuf <$> parseProtoFile ("test/protofiles/" ++ fileNameWithoutExtension ++ ".proto")
+  fromRight emptyProtobuf <$> parseProtoFile ("test/E2E/protofiles/" ++ fileNameWithoutExtension ++ ".proto")
 
 assertProtoFile :: FilePath -> Protobuf -> Assertion
 assertProtoFile fileNameWithoutExtension expected = do
@@ -63,12 +63,12 @@ testFiles = TestCase $ do
   assertProtoFile
     "enum"
     ( Protobuf
-        { syntax =  Just Proto3,
+        { syntax = Just Proto3,
           package = Nothing,
           imports = [],
           options = [],
           enums =
-            [ Protobuf.Enum
+            [ Text.Protobuf.Types.Enum
                 "Data"
                 [ EnumValue "DATA_UNSPECIFIED" 0 [],
                   EnumValue "DATA_SEARCH" 1 [FieldOption "deprecated" (BoolValue True)],

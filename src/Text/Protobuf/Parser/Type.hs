@@ -1,12 +1,12 @@
-module ProtoParser.Type
-  ( module ProtoParser.Type,
+module Text.Protobuf.Parser.Type
+  ( module Text.Protobuf.Parser.Type,
   )
 where
 
-import ProtoParser.Space (spaces')
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces')
+import Text.Protobuf.Types
 
 -- TODO: rename parseName
 protoName :: Parser String
@@ -70,8 +70,10 @@ parseMap =
 
 parseDataType :: Parser DataType
 parseDataType =
-  Scalar <$> parseScalarType
-    <|> Compound <$> protoName
+  Scalar
+    <$> parseScalarType
+      <|> Compound
+    <$> protoName
 
 parseBool :: Parser Bool
 parseBool =

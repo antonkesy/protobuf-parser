@@ -1,10 +1,11 @@
-module ProtoParser.Syntax (parseSyntax, parseSyntax') where
+module Text.Protobuf.Parser.Syntax (parseSyntax, parseSyntax') where
 
 import qualified Data.Maybe
-import ProtoParser.Space (spaces')
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces')
+import Text.Protobuf.Parser.Type
+import Text.Protobuf.Types
 
 parseSyntax' :: Protobuf -> Parser Protobuf
 parseSyntax' p = do
@@ -13,7 +14,7 @@ parseSyntax' p = do
     then unexpected ": There can only be one syntax definition per file"
     else
       return
-        ( Protobuf.merge
+        ( Text.Protobuf.Types.merge
             p
             (Protobuf {syntax = Just syn, package = Nothing, imports = [], options = [], enums = [], messages = [], services = []})
         )

@@ -1,10 +1,10 @@
-module Unit.Enum (allTests) where
+module Unit.Text.Protobuf.Parser.Enum (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser.Enum
-import Protobuf
 import Test.HUnit
 import Text.Parsec (parse)
+import Text.Protobuf.Parser.Enum
+import Text.Protobuf.Types
 
 allTests :: [Test]
 allTests =
@@ -54,8 +54,8 @@ testEnumFieldParser = TestCase $ do
 
 ----------------------------------------------------------------
 
-empytDefault :: Protobuf.Enum
-empytDefault = Protobuf.Enum "TestDefault" []
+empytDefault :: Text.Protobuf.Types.Enum
+empytDefault = Text.Protobuf.Types.Enum "TestDefault" []
 
 exampleEnum :: String
 exampleEnum =
@@ -65,8 +65,8 @@ exampleEnum =
   \  RUNNING = 1;\n\
   \}\n"
 
-exampleEnumField :: Protobuf.Enum
-exampleEnumField = Protobuf.Enum "TestEnum" [EnumValue "UNKNOWN" 0 [], EnumValue "STARTED" 1 [], EnumValue "RUNNING" 1 []]
+exampleEnumField :: Text.Protobuf.Types.Enum
+exampleEnumField = Text.Protobuf.Types.Enum "TestEnum" [EnumValue "UNKNOWN" 0 [], EnumValue "STARTED" 1 [], EnumValue "RUNNING" 1 []]
 
 enumFieldOption :: String
 enumFieldOption =
@@ -76,9 +76,9 @@ enumFieldOption =
   \  RUNNING = 1 [deprecated = false];\n\
   \}\n"
 
-enumFieldOptionProto :: Protobuf.Enum
+enumFieldOptionProto :: Text.Protobuf.Types.Enum
 enumFieldOptionProto =
-  Protobuf.Enum
+  Text.Protobuf.Types.Enum
     "TestEnum"
     [ EnumValue "UNKNOWN" 0 [],
       EnumValue "STARTED" 1 [FieldOption "deprecated" (BoolValue True)],
@@ -89,7 +89,7 @@ testEnumParser :: Test
 testEnumParser = TestCase $ do
   assertEqual "empty" False (isRight (parse parseEnum "" ""))
   assertEqual "atLeastOneEnumField" False (isRight (parse parseEnum "" "enum Test{}"))
-  assertEqual "singleEnum" (Protobuf.Enum "Test" [EnumValue "A" 0 []]) (fromRight empytDefault (parse parseEnum "" "enum Test { A = 0; }"))
+  assertEqual "singleEnum" (Text.Protobuf.Types.Enum "Test" [EnumValue "A" 0 []]) (fromRight empytDefault (parse parseEnum "" "enum Test { A = 0; }"))
   assertEqual "multiple" exampleEnumField (fromRight empytDefault (parse parseEnum "" exampleEnum))
   assertEqual "field option" enumFieldOptionProto (fromRight empytDefault (parse parseEnum "" enumFieldOption))
 

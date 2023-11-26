@@ -1,15 +1,15 @@
-module ProtoParser.Import (parseImport, parseImport') where
+module Text.Protobuf.Parser.Import (parseImport, parseImport') where
 
-import ProtoParser.Space (spaces', spaces1)
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces', spaces1)
+import Text.Protobuf.Types
 
 parseImport' :: Protobuf -> Parser Protobuf
 parseImport' p = do
   imp <- parseImport
   return
-    ( Protobuf.merge
+    ( Text.Protobuf.Types.merge
         p
         (Protobuf {syntax = Nothing, package = Nothing, imports = [imp], options = [], enums = [], messages = [], services = []})
     )

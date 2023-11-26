@@ -1,16 +1,16 @@
-module ProtoParser.Service (parseService, parseService') where
+module Text.Protobuf.Parser.Service (parseService, parseService') where
 
-import ProtoParser.Space (spaces', spaces1)
-import ProtoParser.Type
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces', spaces1)
+import Text.Protobuf.Parser.Type
+import Text.Protobuf.Types
 
 parseService' :: Protobuf -> Parser Protobuf
 parseService' p = do
   x <- parseService
   return
-    ( Protobuf.merge
+    ( Text.Protobuf.Types.merge
         p
         (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [], messages = [], services = [x]})
     )

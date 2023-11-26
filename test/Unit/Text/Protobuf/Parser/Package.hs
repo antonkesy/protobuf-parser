@@ -1,9 +1,9 @@
-module Unit.Package (allTests) where
+module Unit.Text.Protobuf.Parser.Package (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser.Package
 import Test.HUnit
 import Text.Parsec (parse)
+import Text.Protobuf.Parser.Package
 
 allTests :: [Test]
 allTests =

@@ -1,10 +1,10 @@
-module ProtoParser.Package (parsePackage, parsePackage') where
+module Text.Protobuf.Parser.Package (parsePackage, parsePackage') where
 
 import qualified Data.Maybe
-import ProtoParser.Space (spaces', spaces1)
-import Protobuf
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Space (spaces', spaces1)
+import Text.Protobuf.Types
 
 parsePackage' :: Protobuf -> Parser Protobuf
 parsePackage' p = do
@@ -13,7 +13,8 @@ parsePackage' p = do
     then unexpected ": There can only be one package definition per file"
     else
       return
-        ( Protobuf.merge
+        ( Text.Protobuf.Types.merge
+
             p
             (Protobuf {syntax = Nothing, package = Just package', imports = [], options = [], enums = [], messages = [], services = []})
         )

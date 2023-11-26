@@ -1,10 +1,10 @@
-module Unit.Option (allTests) where
+module Unit.Text.Protobuf.Parser.Option (allTests) where
 
 import Data.Either (fromRight, isRight)
-import ProtoParser.Option
-import Protobuf
 import Test.HUnit
 import Text.Parsec (parse)
+import Text.Protobuf.Parser.Option
+import Text.Protobuf.Types
 
 allTests :: [Test]
 allTests =

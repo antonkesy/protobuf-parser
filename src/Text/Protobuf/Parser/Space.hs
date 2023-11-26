@@ -1,4 +1,4 @@
-module ProtoParser.Space
+module Text.Protobuf.Parser.Space
   ( space',
     spaces',
     spaces1,
@@ -6,9 +6,9 @@ module ProtoParser.Space
 where
 
 import Control.Monad (void)
-import ProtoParser.Comment (removeComment)
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Comment (removeComment)
 
 space' :: Parser ()
 space' = void space <|> removeComment <|> void newline <|> void tab

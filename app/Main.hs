@@ -6,7 +6,7 @@ import Prettyprinter
     layoutPretty,
   )
 import Prettyprinter.Render.String (renderString)
-import ProtoParser
+import Text.Protobuf
 
 -- import ProtoParser.Message
 -- import Text.Parsec (parse)
@@ -25,7 +25,7 @@ import ProtoParser
 
 main :: IO ()
 main = do
-  result <- parseProtoFile "test/protofiles/chat.proto"
+  result <- parseProtoFile "test/E2E/protofiles/chat.proto"
   case result of
     Left err -> putStrLn $ "Parse error: " ++ show err
     Right protobuf ->
