@@ -43,8 +43,5 @@ protoValue' old =
       <|> try (parseService' old)
   )
     >>= \new ->
-      do
-        isEnd <- try (lookAhead anyChar >> return False) <|> return True
-        if isEnd
-          then return new
-          else protoValue' new
+      (notFollowedBy anyChar >> return new)
+        <|> protoValue' new
