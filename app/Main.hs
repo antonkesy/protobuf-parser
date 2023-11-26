@@ -1,6 +1,13 @@
 module Main (main) where
 
+import Prettyprinter
+  ( Pretty (pretty),
+    defaultLayoutOptions,
+    layoutPretty,
+  )
+import Prettyprinter.Render.String (renderString)
 import ProtoParser
+
 -- import ProtoParser.Message
 -- import Text.Parsec (parse)
 
@@ -18,7 +25,11 @@ import ProtoParser
 
 main :: IO ()
 main = do
-  result <- parseProtoFile "test/protofiles/enum.proto"
+  result <- parseProtoFile "test/protofiles/chat.proto"
   case result of
     Left err -> putStrLn $ "Parse error: " ++ show err
-    Right protobuf -> putStrLn $ "Successfully parsed: " ++ show protobuf
+    Right protobuf ->
+      putStrLn $
+        renderString $
+          layoutPretty defaultLayoutOptions $
+            pretty protobuf
