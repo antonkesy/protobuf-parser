@@ -19,17 +19,16 @@ parseComment' p = do
   return p
 
 removeComment :: Parser ()
-removeComment = do
-  void (try parseSingleLineComment <|> try parseMultiLineComment)
+removeComment = void (try parseSingleLineComment <|> try parseMultiLineComment)
 
 parseComment :: Parser Comment
 parseComment =
-  (try parseSingleLineComment <|> try parseMultiLineComment)
+  try parseSingleLineComment <|> try parseMultiLineComment
 
 parseSingleLineComment :: Parser Comment
 parseSingleLineComment =
-  (string "//") *> (manyTill anyChar (try eol))
+  string "//" *> manyTill anyChar (try eol)
 
 parseMultiLineComment :: Parser Comment
 parseMultiLineComment =
-  (string "/*") *> manyTill anyChar (try (string "*/"))
+  string "/*" *> manyTill anyChar (try (string "*/"))
