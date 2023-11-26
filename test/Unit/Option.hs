@@ -8,7 +8,8 @@ import Text.Parsec (parse)
 
 allTests :: [Test]
 allTests =
-  [ TestLabel "import" testImport
+  [ TestLabel "import" testImport,
+    TestLabel "field option" testFieldOption
   ]
 
 testOption :: Option
@@ -29,3 +30,22 @@ testImport = TestCase $ do
     "compund option"
     (Option "optimize_for" (CompoundValue "SPEED"))
     (fromRight testOption (parse parseOption "" "option optimize_for = SPEED;"))
+
+testDefaultFieldOption :: [FieldOption]
+testDefaultFieldOption = [FieldOption ("test") (StringValue ("fail"))]
+
+testFieldOption :: Test
+testFieldOption = TestCase $ do
+  assertEqual "empty" False (isRight (parse parseFieldOption "" ""))
+  assertEqual "missing content" False (isRight (parse parseFieldOption "" "[]"))
+  assertEqual
+    "single bool option"
+    ([FieldOption ("deprecated") (BoolValue True)])
+    (fromRight testDefaultFieldOption (parse parseFieldOption "" "[deprecated = true]"))
+  assertEqual
+    "multi bool option"
+    ( [ (FieldOption ("deprecated") (BoolValue True)),
+        (FieldOption ("other") (BoolValue False))
+      ]
+    )
+    (fromRight testDefaultFieldOption (parse parseFieldOption "" "[deprecated = true, other = false]"))

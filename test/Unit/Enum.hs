@@ -24,14 +24,14 @@ testReservedEnumNumbers = TestCase $ do
 ----------------------------------------------------------------
 
 emptyDefault :: EnumField
-emptyDefault = EnumValue "TestDefault" 0
+emptyDefault = EnumValue "TestDefault" 0 []
 
 testEnumFieldParser :: Test
 testEnumFieldParser = TestCase $ do
   assertEqual "empty" False (isRight (parse parseEnumField "" ""))
-  assertEqual "enumEntry" (EnumValue "TEST" 0) (fromRight emptyDefault (parse parseEnumField "" "TEST = 0"))
-  assertEqual "enumEntry" (EnumValue "MORE" 1) (fromRight emptyDefault (parse parseEnumField "" "MORE = 1"))
-  assertEqual "enumEntry" (EnumValue "UNDER_SCORE" 42) (fromRight emptyDefault (parse parseEnumField "" "UNDER_SCORE = 42"))
+  assertEqual "enumEntry" (EnumValue "TEST" 0 []) (fromRight emptyDefault (parse parseEnumField "" "TEST = 0"))
+  assertEqual "enumEntry" (EnumValue "MORE" 1 []) (fromRight emptyDefault (parse parseEnumField "" "MORE = 1"))
+  assertEqual "enumEntry" (EnumValue "UNDER_SCORE" 42 []) (fromRight emptyDefault (parse parseEnumField "" "UNDER_SCORE = 42"))
   -- reserved number --
   assertEqual "empytReserved" False (isRight (parse parseEnumField "" "reserved"))
   assertEqual "outOfRangeSingleReserved" False (isRight (parse parseEnumField "" "reserved -1"))
@@ -66,25 +66,34 @@ exampleEnum =
   \}\n"
 
 exampleEnumField :: Protobuf.Enum
-exampleEnumField = Protobuf.Enum "TestEnum" [EnumValue "UNKNOWN" 0, EnumValue "STARTED" 1, EnumValue "RUNNING" 1]
+exampleEnumField = Protobuf.Enum "TestEnum" [EnumValue "UNKNOWN" 0 [], EnumValue "STARTED" 1 [], EnumValue "RUNNING" 1 []]
+
+enumFieldOption :: String
+enumFieldOption =
+  "enum TestEnum {\n\
+  \  UNKNOWN = 0;\n\
+  \  STARTED = 1 [deprecated = true];\n\
+  \  RUNNING = 1 [deprecated = false];\n\
+  \}\n"
+
+enumFieldOptionProto :: Protobuf.Enum
+enumFieldOptionProto =
+  Protobuf.Enum
+    "TestEnum"
+    [ EnumValue "UNKNOWN" 0 [],
+      EnumValue "STARTED" 1 [FieldOption "deprecated" (BoolValue True)],
+      EnumValue "RUNNING" 1 [FieldOption "deprecated" (BoolValue False)]
+    ]
 
 testEnumParser :: Test
 testEnumParser = TestCase $ do
   assertEqual "empty" False (isRight (parse parseEnum "" ""))
   assertEqual "atLeastOneEnumField" False (isRight (parse parseEnum "" "enum Test{}"))
-  assertEqual "singleEnum" (Protobuf.Enum "Test" [EnumValue "A" 0]) (fromRight empytDefault (parse parseEnum "" "enum Test { A = 0; }"))
+  assertEqual "singleEnum" (Protobuf.Enum "Test" [EnumValue "A" 0 []]) (fromRight empytDefault (parse parseEnum "" "enum Test { A = 0; }"))
   assertEqual "multiple" exampleEnumField (fromRight empytDefault (parse parseEnum "" exampleEnum))
+  assertEqual "field option" enumFieldOptionProto (fromRight empytDefault (parse parseEnum "" enumFieldOption))
 
 ----------------------------------------------------------------
-
--- TODO: test enum with options
--- enum Data {
---   DATA_UNSPECIFIED = 0;
---   DATA_SEARCH = 1 [deprecated = true];
---   DATA_DISPLAY = 2 [
---     (string_name) = "display_value"
---   ];
--- }
 
 testEnumFieldNumbers :: Test
 testEnumFieldNumbers = TestCase $ do

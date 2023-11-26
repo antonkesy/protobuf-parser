@@ -74,14 +74,16 @@ data OptionValue
   | CompoundValue Name
   deriving (Show, Eq)
 
-data FieldOption = FieldOption Name OptionValue
+data FieldOption
+  = FieldOption Name OptionValue
+  | MultipleFieldOption [FieldOption]
   deriving (Show, Eq)
 
 data MessageField
-  = ImplicitMessageField DataType Name FieldNumber -- [FieldOption]
-  | OptionalMessageField DataType Name FieldNumber -- [FieldOption]
-  | RepeatedMessageField DataType Name FieldNumber -- [FieldOption]
-  | MessageReserved MessageReservedValues -- [FieldOption]
+  = ImplicitMessageField DataType Name FieldNumber [FieldOption]
+  | OptionalMessageField DataType Name FieldNumber [FieldOption]
+  | RepeatedMessageField DataType Name FieldNumber [FieldOption]
+  | MessageReserved MessageReservedValues
   | OneOfMessageField Name [MessageField]
   deriving (Show, Eq)
 
@@ -105,7 +107,7 @@ data EnumReservedValues
   deriving (Show, Eq)
 
 data EnumField
-  = EnumValue Name EnumNumber
+  = EnumValue Name EnumNumber [FieldOption]
   | EnumOption Name Bool
   | EnumReserved EnumReservedValues
   deriving (Show, Eq)

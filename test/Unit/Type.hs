@@ -11,7 +11,8 @@ allTests =
   [ TestLabel "numberParser" testNumberParser,
     TestLabel "protoName" testProtoName,
     TestLabel "scalarType" testSclarType,
-    TestLabel "map" testMap
+    TestLabel "map" testMap,
+    TestLabel "custom name" testCustomName
   ]
 
 testNumberParser :: Test
@@ -63,3 +64,10 @@ testMap = TestCase $ do
     "Simple"
     (Map (IntKey Int32) (MapName "V"))
     (fromRight defaulTestMap (parse parseMap "" "map<int32,V>"))
+
+testCustomName :: Test
+testCustomName = TestCase $ do
+  assertEqual "empty" False (isRight (parse parseCustomName "" ""))
+  -- TODO: has to have at least 1 char
+  -- assertEqual "empty" False (isRight (parse parseCustomName "" "()"))
+  assertEqual "Simple" "(foo)" (fromRight "" (parse parseCustomName "" "(foo)"))

@@ -1,5 +1,6 @@
 module ProtoParser.Message (parseMessage, parseMessage') where
 
+import ProtoParser.Option
 import ProtoParser.Reserved
 import ProtoParser.Space (spaces', spaces1)
 import ProtoParser.Type
@@ -52,6 +53,8 @@ parseMessageField =
     fieldName = spaces' *> protoName
     fieldNumber = spaces' *> char '=' *> spaces' *> protoNumber
     fields = try parseMessageField `sepEndBy` char ';'
+    fieldOptions = try parseFieldOption <|> return []
+
     reservedValues =
       try (ReservedMessageNames <$> reservedNames)
         <|> try (ReservedMessageNumbers <$> reservedNumbers protoNumber fieldNumberRange)
@@ -60,6 +63,7 @@ parseMessageField =
         <$> (try parseDataType <|> try parseMap)
         <*> fieldName
         <*> fieldNumber
+        <*> fieldOptions
     optionalField =
       OptionalMessageField
         <$> ( string "optional"
@@ -68,6 +72,7 @@ parseMessageField =
             )
         <*> fieldName
         <*> fieldNumber
+        <*> fieldOptions
     repeatedField =
       RepeatedMessageField
         <$> ( string "repeated"
@@ -76,6 +81,7 @@ parseMessageField =
             )
         <*> fieldName
         <*> fieldNumber
+        <*> fieldOptions
     reservedField =
       MessageReserved
         <$> ( string "reserved"

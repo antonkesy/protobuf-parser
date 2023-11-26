@@ -1,7 +1,7 @@
-module ProtoParser.Option (parseOption, parseOption') where
+module ProtoParser.Option (parseOption, parseOption', parseFieldOption) where
 
 import ProtoParser.Space (spaces', spaces1)
-import ProtoParser.Type (parseBool, parseString, protoName)
+import ProtoParser.Type (parseBool, parseCustomName, parseString, protoName)
 import Protobuf
 import Text.Parsec
 import Text.Parsec.String
@@ -38,29 +38,24 @@ parseOption =
             <* char ';'
         )
 
--- TODO: post options -> [deprecated = true], [packed = false] ...,,,
--- TODO: split by ',' and same possible values as protoOptions
-
--- [(string_name) = ...]; <- valid
--- [retention = RETENTION_SOURCE];
--- TODO: [retention = RETENTION_SOURCE, retention = RETENTION_SOURCE];  <- how to set this in data type?
--- parseFieldOption :: Parser FieldOption
--- parseFieldOption =
---   FieldOption
---     <$> ( spaces'
---             *> char '['
---             *> spaces'
---             *> protoName
---             <* spaces'
---         )
---     <*> ( spaces'
---             *> char '='
---             *> spaces'
---             *> ( (StringValue <$> try parseString)
---                    <|> (BoolValue <$> try parseBool)
---                    <|> (CompoundValue <$> try protoName)
---                )
---             <* spaces'
---             <* char ']'
---             <* char ';'
---         )
+parseFieldOption :: Parser [FieldOption]
+parseFieldOption =
+  start
+    *> try ((try singleFieldOption `sepBy1` try (char ',')) <* end)
+  where
+    start = spaces' *> char '[' *> spaces'
+    end = spaces' <* char ']'
+    name = spaces' *> (try protoName <|> parseCustomName) <* spaces'
+    value =
+      spaces'
+        *> char '='
+        *> spaces'
+        *> ( (StringValue <$> try parseString)
+               <|> (BoolValue <$> try parseBool)
+               <|> (CompoundValue <$> try protoName)
+           )
+        <* spaces'
+    singleFieldOption =
+      FieldOption
+        <$> name
+        <*> value

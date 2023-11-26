@@ -85,3 +85,9 @@ parseString =
   char '\"'
     *> manyTill anyChar (char '\"')
     <* spaces'
+
+parseCustomName :: Parser String
+parseCustomName =
+  char '('
+    *> ((\x -> "(" ++ x ++ ")") <$> manyTill anyChar (char ')'))
+    <* spaces'

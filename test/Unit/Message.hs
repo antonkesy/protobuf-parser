@@ -24,8 +24,8 @@ testMessage1Proto :: Message
 testMessage1Proto =
   Message
     "Foo"
-    [ ImplicitMessageField (Scalar (IntType Int32)) "foo" 1,
-      ImplicitMessageField (Scalar (FloatType Double)) "bar" 2
+    [ ImplicitMessageField (Scalar (IntType Int32)) "foo" 1 [],
+      ImplicitMessageField (Scalar (FloatType Double)) "bar" 2 []
     ]
 
 testMessageReserved :: String
@@ -51,7 +51,7 @@ testOptionalProto :: Message
 testOptionalProto =
   Message
     "Foo"
-    [ OptionalMessageField (Scalar (IntType Int32)) "foo" 1
+    [ OptionalMessageField (Scalar (IntType Int32)) "foo" 1 []
     ]
 
 testRepeated :: String
@@ -64,7 +64,7 @@ testRepeatedProto :: Message
 testRepeatedProto =
   Message
     "Foo"
-    [ RepeatedMessageField (Scalar (IntType Int32)) "foo" 1
+    [ RepeatedMessageField (Scalar (IntType Int32)) "foo" 1 []
     ]
 
 testReservedNames :: String
@@ -95,9 +95,26 @@ testOneOfProto =
     "Foo"
     [ OneOfMessageField
         "foo"
-        [ ImplicitMessageField (Scalar (IntType Int32)) "bar" 1,
-          ImplicitMessageField (Scalar (FloatType Double)) "baz" 2
+        [ ImplicitMessageField (Scalar (IntType Int32)) "bar" 1 [],
+          ImplicitMessageField (Scalar (FloatType Double)) "baz" 2 []
         ]
+    ]
+
+testFieldOption :: String
+testFieldOption =
+  "message Foo {\
+  \int32 foo = 1 [default = true];\
+  \}"
+
+testFieldOptionProto :: Message
+testFieldOptionProto =
+  Message
+    "Foo"
+    [ ImplicitMessageField
+        (Scalar (IntType Int32))
+        "foo"
+        1
+        [FieldOption "default" (BoolValue True)]
     ]
 
 testSimple :: Test
@@ -112,3 +129,4 @@ testSimple = TestCase $ do
   assertEqual "repeated" testRepeatedProto (fromRight failMessage (parse parseMessage "" testRepeated))
   assertEqual "reserved names" testReservedNamesProto (fromRight failMessage (parse parseMessage "" testReservedNames))
   assertEqual "oneof" testOneOfProto (fromRight failMessage (parse parseMessage "" testOneOf))
+  assertEqual "field option" testFieldOptionProto (fromRight failMessage (parse parseMessage "" testFieldOption))

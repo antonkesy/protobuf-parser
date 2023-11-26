@@ -9,6 +9,7 @@ module ProtoParser.Enum
   )
 where
 
+import ProtoParser.Option
 import ProtoParser.Reserved
 import ProtoParser.Space (spaces', spaces1)
 import ProtoParser.Type
@@ -58,6 +59,7 @@ parseEnumField =
       EnumValue
         <$> fieldName
         <*> fieldNumber
+        <*> (try parseFieldOption <|> return [])
     optionField =
       EnumOption
         <$> (string "option" *> spaces1 *> protoName)
