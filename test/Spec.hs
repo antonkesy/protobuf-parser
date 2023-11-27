@@ -1,6 +1,6 @@
 import E2E.Files as Files
 import Test.HUnit (Test (TestList), runTestTTAndExit)
-import Unit.Text.Protobuf as Protobuf
+import Unit.Text.Protobuf.Parser as Protobuf
 import Unit.Text.Protobuf.Parser.Comment as Comment
 import Unit.Text.Protobuf.Parser.Enum as Unit
 import Unit.Text.Protobuf.Parser.Import as Import

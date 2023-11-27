@@ -25,7 +25,7 @@ source-repository head
 
 library
   exposed-modules:
-      Text.Protobuf
+      Text.Protobuf.Parser
       Text.Protobuf.Parser.Comment
       Text.Protobuf.Parser.EndOfLine
       Text.Protobuf.Parser.Enum
@@ -73,7 +73,7 @@ test-suite protobuf-parser-test
   main-is: Spec.hs
   other-modules:
       E2E.Files
-      Unit.Text.Protobuf
+      Unit.Text.Protobuf.Parser
       Unit.Text.Protobuf.Parser.Comment
       Unit.Text.Protobuf.Parser.Enum
       Unit.Text.Protobuf.Parser.Import

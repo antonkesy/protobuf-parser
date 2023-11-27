@@ -6,7 +6,7 @@ import Prettyprinter
     layoutPretty,
   )
 import Prettyprinter.Render.String (renderString)
-import Text.Protobuf
+import Text.Protobuf.Parser
 
 -- import ProtoParser.Message
 -- import Text.Parsec (parse)

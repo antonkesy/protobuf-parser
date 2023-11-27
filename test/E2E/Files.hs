@@ -2,7 +2,7 @@ module E2E.Files (allTests) where
 
 import Data.Either (fromRight)
 import Test.HUnit
-import Text.Protobuf
+import Text.Protobuf.Parser
 import Text.Protobuf.Types
 
 allTests :: [Test]

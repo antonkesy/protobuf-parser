@@ -1,10 +1,8 @@
-module Text.Protobuf
+module Text.Protobuf.Parser
   ( parseProtobuf,
     parseProtoFile,
   )
 where
-
--- TODO: rename to Text.Protobuf.Parser
 
 import System.IO
 import Text.Parsec
