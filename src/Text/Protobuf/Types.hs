@@ -1,5 +1,3 @@
-{-# LANGUAGE GADTs #-}
-
 module Text.Protobuf.Types (module Text.Protobuf.Types) where
 
 import Data.Word (Word32)
@@ -92,8 +90,7 @@ data Message
   = Message MessageName [MessageField]
   deriving (Show, Eq)
 
-data ReservedNames where
-  ReservedNames :: [Name] -> ReservedNames
+data ReservedNames = ReservedNames [Name]
   deriving (Show, Eq)
 
 data MessageReservedValues
