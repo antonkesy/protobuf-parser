@@ -241,12 +241,25 @@ instance Pretty IntType where
 
 instance Pretty Message where
   pretty (Message name fields) =
-    vsep [pretty "message" <+> pretty name <+> pretty "{", indent 2 (vsep (map pretty fields)), pretty "}"]
+    vsep
+      [ pretty "message"
+          <+> pretty name
+          <+> pretty "{",
+        indent 3 (vsep (map pretty fields)),
+        indent 2 (pretty "}")
+      ]
 
 instance Pretty FieldOption where
-  pretty (FieldOption name value) = pretty name <+> pretty "=" <+> pretty value
+  pretty (FieldOption name value) =
+    pretty name
+      <+> pretty "="
+      <+> pretty value
   pretty (MultipleFieldOption opt) =
-    vsep [pretty "[", indent 2 (prettyList opt), pretty "]"]
+    vsep
+      [ pretty "[",
+        indent 2 (prettyList opt),
+        pretty "]"
+      ]
 
 instance Pretty OptionValue where
   pretty (StringValue s) = dquotes (pretty s)
@@ -264,73 +277,134 @@ instance Pretty MapValue where
 instance Pretty DataType where
   pretty (Scalar st) = pretty st
   pretty (Compound name) = pretty name
-  pretty (Map key value) = pretty "map" <+> pretty key <+> pretty "=>" <+> pretty value
+  pretty (Map key value) =
+    pretty "map"
+      <+> pretty key
+      <+> pretty "=>"
+      <+> pretty value
 
 instance Pretty MessageField where
   pretty (ImplicitMessageField dt name fieldNum opt) =
     vsep
       [ pretty dt,
-        pretty name <+> pretty "=" <+> pretty fieldNum <+> prettyList opt
+        pretty name
+          <+> pretty "="
+          <+> pretty fieldNum
+          <+> prettyList opt
       ]
   pretty (OptionalMessageField dt name fieldNum opt) =
     vsep
-      [ pretty "optional" <+> pretty dt,
-        pretty name <+> pretty "=" <+> pretty fieldNum <+> prettyList opt
+      [ pretty "optional"
+          <+> pretty dt,
+        pretty name
+          <+> pretty "="
+          <+> pretty fieldNum
+          <+> prettyList opt
       ]
   pretty (RepeatedMessageField dt name fieldNum opt) =
     vsep
-      [ pretty "repeated" <+> pretty dt,
-        pretty name <+> pretty "=" <+> pretty fieldNum <+> prettyList opt
+      [ pretty "repeated"
+          <+> pretty dt,
+        pretty name
+          <+> pretty "="
+          <+> pretty fieldNum
+          <+> prettyList opt
       ]
   pretty (MessageReserved values) = pretty values
   pretty (OneOfMessageField name fields) =
     vsep
-      [ pretty "oneof" <+> pretty name <+> pretty "{",
+      [ pretty "oneof"
+          <+> pretty name
+          <+> pretty "{",
         indent 2 (vsep (map pretty fields)),
         pretty "}"
       ]
 
 instance Pretty MessageReservedValues where
   pretty (ReservedMessageNumbers numbers) =
-    pretty "reserved" <+> hsep (map pretty numbers)
+    pretty "reserved"
+      <+> hsep (map pretty numbers)
   pretty (ReservedMessageNames (ReservedNames names)) =
-    pretty "reserved" <+> hsep (map pretty names)
+    pretty "reserved"
+      <+> hsep (map pretty names)
 
 instance Pretty EnumReservedValues where
   pretty (ReservedEnumNumbers numbers) =
-    pretty "reserved" <+> hsep (map pretty numbers)
+    pretty "reserved"
+      <+> hsep (map pretty numbers)
   pretty (ReservedEnumNames (ReservedNames names)) =
-    pretty "reserved" <+> hsep (map pretty names)
+    pretty "reserved"
+      <+> hsep (map pretty names)
 
 instance Pretty EnumField where
   pretty (EnumValue name number opt) =
-    vsep [pretty name <+> pretty "=" <+> pretty number <+> prettyList opt]
-  pretty (EnumOption name value) = pretty name <+> pretty "=" <+> pretty value
-  pretty (EnumReserved values) = pretty values
+    vsep
+      [ pretty name
+          <+> pretty "="
+          <+> pretty number
+          <+> prettyList opt
+      ]
+  pretty (EnumOption name value) =
+    pretty name
+      <+> pretty "="
+      <+> pretty value
+  pretty (EnumReserved values) =
+    pretty values
 
 instance Pretty Text.Protobuf.Types.Enum where
   pretty (Enum name fields) =
-    vsep [pretty "enum" <+> pretty name <+> pretty "{", indent 2 (vsep (map pretty fields)), pretty "}"]
+    vsep
+      [ pretty "enum"
+          <+> pretty name
+          <+> pretty "{",
+        indent 2 (vsep (map pretty fields)),
+        pretty "}"
+      ]
 
 instance Pretty Service where
   pretty (Service name rpcs) =
-    vsep [pretty "service" <+> pretty name <+> pretty "{", indent 2 (vsep (map pretty rpcs)), pretty "}"]
+    vsep
+      [ pretty "service"
+          <+> pretty name
+          <+> pretty "{",
+        indent 2 (vsep (map pretty rpcs)),
+        pretty "}"
+      ]
 
 instance Pretty RequestType where
-  pretty (RequestType name) = pretty name
-  pretty (RequestTypeStream name) = pretty "stream" <+> pretty name
+  pretty (RequestType name) =
+    pretty name
+  pretty (RequestTypeStream name) =
+    pretty "stream"
+      <+> pretty name
 
 instance Pretty ReplyType where
-  pretty (ReplyType name) = pretty name
-  pretty (ReplyTypeStream name) = pretty "stream" <+> pretty name
+  pretty (ReplyType name) =
+    pretty name
+  pretty (ReplyTypeStream name) =
+    pretty "stream"
+      <+> pretty name
 
 instance Pretty RPC where
   pretty (RPC name reqType replyType) =
-    vsep [pretty "rpc" <+> pretty name <+> pretty "(", pretty reqType, pretty ")" <+> pretty "returns" <+> pretty replyType]
+    vsep
+      [ pretty "rpc"
+          <+> pretty name
+          <+> pretty "(",
+        pretty reqType,
+        pretty ")"
+          <+> pretty "returns"
+          <+> pretty replyType
+      ]
 
 instance Pretty Option where
-  pretty (Option name value) = pretty name <+> pretty "=" <+> pretty value
+  pretty (Option name value) =
+    pretty name
+      <+> pretty "="
+      <+> pretty value
 
 instance Pretty Syntax where
-  pretty Proto2 = pretty "syntax = \"proto2\""
-  pretty Proto3 = pretty "syntax = \"proto3\""
+  pretty Proto2 =
+    pretty "syntax = \"proto2\""
+  pretty Proto3 =
+    pretty "syntax = \"proto3\""
