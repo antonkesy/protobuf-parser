@@ -26,14 +26,14 @@ stack test
 ## Structure
 
 ```
-.
+protobuf-parser
 ├── app
 │   └── Main.hs -> CLI Parsing
 ├── ...
 ├── src
 │   └── Text
 │       └── Protobuf
-│           ├── Parser -> Partial Parser
+│           ├── Parser -> Parser Combinators
 │           │   ├── ...
 │           │   └── *.hs
 │           ├── Parser.hs -> Complete Protobuf Parser
