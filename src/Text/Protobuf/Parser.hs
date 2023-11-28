@@ -31,8 +31,6 @@ protoValue :: Parser Protobuf
 protoValue = do
   protoValue' emptyProtobuf
 
--- TODO: extend - https://protobuf.dev/programming-guides/proto3/#option-targets
--- TODO: rework according to https://protobuf.dev/reference/protobuf/proto3-spec/
 protoValue' :: Protobuf -> Parser Protobuf
 protoValue' old =
   ( try (parsePackage' old)

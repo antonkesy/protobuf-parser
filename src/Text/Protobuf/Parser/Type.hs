@@ -72,8 +72,8 @@ parseDataType :: Parser DataType
 parseDataType =
   Scalar
     <$> parseScalarType
-      <|> Compound
-    <$> protoName
+    <|> Compound
+      <$> protoName
 
 parseBool :: Parser Bool
 parseBool =
