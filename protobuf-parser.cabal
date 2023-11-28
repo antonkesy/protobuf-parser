@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.35.2.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -25,20 +25,32 @@ source-repository head
 
 library
   exposed-modules:
-      Protobuf
-      ProtoParser
-      ProtoParser.Enum
-      ProtoParser.Misc
+      Text.Protobuf.Parser
+      Text.Protobuf.Parser.Comment
+      Text.Protobuf.Parser.EndOfLine
+      Text.Protobuf.Parser.Enum
+      Text.Protobuf.Parser.Import
+      Text.Protobuf.Parser.Message
+      Text.Protobuf.Parser.Option
+      Text.Protobuf.Parser.Package
+      Text.Protobuf.Parser.Reserved
+      Text.Protobuf.Parser.Service
+      Text.Protobuf.Parser.Space
+      Text.Protobuf.Parser.Syntax
+      Text.Protobuf.Parser.Type
+      Text.Protobuf.Types
   other-modules:
       Paths_protobuf_parser
   autogen-modules:
       Paths_protobuf_parser
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Werror -W -fwarn-unused-imports -fwarn-unused-binds -fwarn-orphans -fwarn-unused-matches -fwarn-unused-do-bind -fwarn-wrong-do-bind -fwarn-missing-signatures -fno-warn-partial-type-signatures -Wredundant-constraints -rtsopts
   build-depends:
       base >=4.7 && <5
+    , optparse-applicative >=0.17.0
     , parsec >=3.1.16 && <4
+    , prettyprinter >=1.7.1 && <2
   default-language: Haskell2010
 
 executable protobuf-parser-exe
@@ -49,10 +61,12 @@ executable protobuf-parser-exe
       Paths_protobuf_parser
   hs-source-dirs:
       app
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Werror -W -fwarn-unused-imports -fwarn-unused-binds -fwarn-orphans -fwarn-unused-matches -fwarn-unused-do-bind -fwarn-wrong-do-bind -fwarn-missing-signatures -fno-warn-partial-type-signatures -Wredundant-constraints -rtsopts -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , optparse-applicative >=0.17.0
     , parsec >=3.1.16 && <4
+    , prettyprinter >=1.7.1 && <2
     , protobuf-parser
   default-language: Haskell2010
 
@@ -60,17 +74,28 @@ test-suite protobuf-parser-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Unit.Enum
-      Unit.Misc
+      E2E.Files
+      Unit.Text.Protobuf.Parser
+      Unit.Text.Protobuf.Parser.Comment
+      Unit.Text.Protobuf.Parser.Enum
+      Unit.Text.Protobuf.Parser.Import
+      Unit.Text.Protobuf.Parser.Message
+      Unit.Text.Protobuf.Parser.Option
+      Unit.Text.Protobuf.Parser.Package
+      Unit.Text.Protobuf.Parser.Service
+      Unit.Text.Protobuf.Parser.Syntax
+      Unit.Text.Protobuf.Parser.Type
       Paths_protobuf_parser
   autogen-modules:
       Paths_protobuf_parser
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -Werror -W -fwarn-unused-imports -fwarn-unused-binds -fwarn-orphans -fwarn-unused-matches -fwarn-unused-do-bind -fwarn-wrong-do-bind -fwarn-missing-signatures -fno-warn-partial-type-signatures -Wredundant-constraints -rtsopts -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       HUnit
     , base >=4.7 && <5
+    , optparse-applicative >=0.17.0
     , parsec >=3.1.16 && <4
+    , prettyprinter >=1.7.1 && <2
     , protobuf-parser
   default-language: Haskell2010

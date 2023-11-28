@@ -1,0 +1,13 @@
+import "foo.proto";
+import "bar.proto";
+
+package foobar;
+
+message SearchRequest {
+  int32 page_number = 2;
+  double results_per_page = 3;
+}
+
+message SearchResponse {
+  string name = 1;
+}
