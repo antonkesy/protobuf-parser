@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "de.antonkesy.vs.chat";
+option java_package = "de.antonkesy.chat";
 option java_outer_classname = "Chat";
 
 package chat;

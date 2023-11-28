@@ -14,14 +14,11 @@ allTests =
     TestLabel "fieldNumbers" testEnumFieldNumbers
   ]
 
-----------------------------------------------------------------
 testReservedEnumNumbers :: Test
 testReservedEnumNumbers = TestCase $ do
   assertEqual "empty" False (isRight (parse (reservedNumbers enumNumber enumNumberRange) "" ""))
   assertEqual "single" [0] (fromRight [] (parse (reservedNumbers enumNumber enumNumberRange) "" "0"))
   assertEqual "range" [0, 1, 2] (fromRight [] (parse (reservedNumbers enumNumber enumNumberRange) "" "min to 2"))
-
-----------------------------------------------------------------
 
 emptyDefault :: EnumField
 emptyDefault = EnumValue "TestDefault" 0 []
@@ -51,8 +48,6 @@ testEnumFieldParser = TestCase $ do
   assertEqual "empty" False (isRight (parse parseEnumField "" ""))
   assertEqual "invalidOption" (EnumOption (Option "allow_alias" (BoolValue True))) (fromRight emptyDefault (parse parseEnumField "" "option allow_alias = true;"))
   assertEqual "invalidOption" (EnumOption (Option "allow_alias" (BoolValue False))) (fromRight emptyDefault (parse parseEnumField "" "option allow_alias = false;"))
-
-----------------------------------------------------------------
 
 empytDefault :: Text.Protobuf.Types.Enum
 empytDefault = Text.Protobuf.Types.Enum "TestDefault" []
@@ -93,8 +88,6 @@ testEnumParser = TestCase $ do
   assertEqual "multiple" exampleEnumField (fromRight empytDefault (parse parseEnum "" exampleEnum))
   assertEqual "field option" enumFieldOptionProto (fromRight empytDefault (parse parseEnum "" enumFieldOption))
 
-----------------------------------------------------------------
-
 testEnumFieldNumbers :: Test
 testEnumFieldNumbers = TestCase $ do
   assertEqual "belowMin" False (isRight (parse enumNumber "" "-1"))
@@ -103,4 +96,3 @@ testEnumFieldNumbers = TestCase $ do
 
 -- TODO: not correct number
 -- assertEqual "aboveMax" (False) (isRight (parse enumNumber "" "4294967296"))
-----------------------------------------------------------------

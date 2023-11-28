@@ -33,8 +33,6 @@ testNumberParser = TestCase $ do
   assertEqual "reservedEnd" False (isRight (parse protoNumber "" "19999"))
   assertEqual "aboveReserved" 20000 (fromRight 0 (parse protoNumber "" "20000"))
 
-----------------------------------------------------------------
-
 testProtoName :: Test
 testProtoName = TestCase $ do
   assertEqual "not a name" False (isRight (parse protoName "" "-1"))
@@ -46,8 +44,6 @@ testSclarType = TestCase $ do
   assertEqual "int32" (IntType Int32) (fromRight BoolType (parse parseScalarType "" "int32"))
   assertEqual "double" (FloatType Double) (fromRight BoolType (parse parseScalarType "" "double"))
   assertEqual "string" StringType (fromRight BoolType (parse parseScalarType "" "string"))
-
-----------------------------------------------------------------
 
 defaulTestMap :: DataType
 defaulTestMap = Map (StringKey "") (MapName "")

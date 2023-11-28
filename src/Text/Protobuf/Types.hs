@@ -100,7 +100,6 @@ data MessageReservedValues
   | ReservedMessageNames ReservedNames
   deriving (Show, Eq)
 
--- TODO: make reserved type generic
 data EnumReservedValues
   = ReservedEnumNumbers [EnumNumber]
   | ReservedEnumNames ReservedNames
@@ -154,7 +153,6 @@ data Protobuf = Protobuf
   }
   deriving (Show, Eq)
 
-------------------------------------------------------------
 emptyProtobuf :: Protobuf
 emptyProtobuf =
   ( Protobuf
@@ -167,8 +165,6 @@ emptyProtobuf =
         services = []
       }
   )
-
-------------------------------------------------------------
 
 merge' :: [Protobuf] -> Protobuf
 merge' = foldl1 Text.Protobuf.Types.merge
@@ -197,8 +193,6 @@ merge a b =
     mergeSyntax (Just x) (Just y)
       | x == y = Just x
       | otherwise = error "Conflicting syntax versions"
-
-------------------------------------------------------------
 
 instance Pretty Protobuf where
   pretty protobuf =

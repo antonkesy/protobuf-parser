@@ -21,7 +21,6 @@ testSingleLineComment = TestCase $ do
   assertEqual "Trailing Space" "comment " (fromRight "incorrect" (parse parseSingleLineComment "" "//comment "))
   assertEqual "New Line End" "comment " (fromRight "incorrect" (parse parseSingleLineComment "" "//comment \n"))
 
-----------------------------------------------------------------
 testMultiLineComment :: Test
 testMultiLineComment = TestCase $ do
   assertEqual "empty" False (isRight (parse parseMultiLineComment "" ""))

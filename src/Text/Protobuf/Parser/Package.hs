@@ -14,7 +14,6 @@ parsePackage' p = do
     else
       return
         ( Text.Protobuf.Types.merge
-
             p
             (Protobuf {syntax = Nothing, package = Just package', imports = [], options = [], enums = [], messages = [], services = []})
         )

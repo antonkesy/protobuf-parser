@@ -13,7 +13,7 @@ allTests =
   ]
 
 testOption :: Option
-testOption = Option ("test") (StringValue ("fail"))
+testOption = Option "test" (StringValue "fail")
 
 testImport :: Test
 testImport = TestCase $ do
@@ -32,7 +32,7 @@ testImport = TestCase $ do
     (fromRight testOption (parse parseOption "" "option optimize_for = SPEED;"))
 
 testDefaultFieldOption :: [FieldOption]
-testDefaultFieldOption = [FieldOption ("test") (StringValue ("fail"))]
+testDefaultFieldOption = [FieldOption "test" (StringValue "fail")]
 
 testFieldOption :: Test
 testFieldOption = TestCase $ do
@@ -40,12 +40,11 @@ testFieldOption = TestCase $ do
   assertEqual "missing content" False (isRight (parse parseFieldOption "" "[]"))
   assertEqual
     "single bool option"
-    ([FieldOption ("deprecated") (BoolValue True)])
+    [FieldOption "deprecated" (BoolValue True)]
     (fromRight testDefaultFieldOption (parse parseFieldOption "" "[deprecated = true]"))
   assertEqual
     "multi bool option"
-    ( [ (FieldOption ("deprecated") (BoolValue True)),
-        (FieldOption ("other") (BoolValue False))
-      ]
-    )
+    [ FieldOption "deprecated" (BoolValue True),
+      FieldOption "other" (BoolValue False)
+    ]
     (fromRight testDefaultFieldOption (parse parseFieldOption "" "[deprecated = true, other = false]"))
