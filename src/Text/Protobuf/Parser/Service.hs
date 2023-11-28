@@ -26,7 +26,7 @@ parseService =
     <*> ( spaces'
             *> char '{'
             *> spaces'
-            *> (try parseServiceField `sepEndBy1` (lookAhead anyChar))
+            *> many1 (try parseServiceField)
             <* spaces'
             <* char '}'
         )
