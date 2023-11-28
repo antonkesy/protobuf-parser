@@ -49,8 +49,8 @@ testEnumFieldParser = TestCase $ do
   assertEqual "multiReservedName" (EnumReserved (ReservedEnumNames (ReservedNames ["FOO", "BAR"]))) (fromRight emptyDefault (parse parseEnumField "" "reserved \"FOO\", \"BAR\""))
   -- option --
   assertEqual "empty" False (isRight (parse parseEnumField "" ""))
-  assertEqual "invalidOption" (EnumOption "allow_alias" True) (fromRight emptyDefault (parse parseEnumField "" "option allow_alias = true"))
-  assertEqual "invalidOption" (EnumOption "allow_alias" False) (fromRight emptyDefault (parse parseEnumField "" "option allow_alias = false"))
+  assertEqual "invalidOption" (EnumOption (Option "allow_alias" (BoolValue True))) (fromRight emptyDefault (parse parseEnumField "" "option allow_alias = true;"))
+  assertEqual "invalidOption" (EnumOption (Option "allow_alias" (BoolValue False))) (fromRight emptyDefault (parse parseEnumField "" "option allow_alias = false;"))
 
 ----------------------------------------------------------------
 

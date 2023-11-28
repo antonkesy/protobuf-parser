@@ -60,10 +60,7 @@ parseEnumField =
         <$> fieldName
         <*> fieldNumber
         <*> (try parseFieldOption <|> return [])
-    optionField =
-      EnumOption
-        <$> (string "option" *> spaces1 *> protoName)
-        <*> (spaces1 *> char '=' *> spaces' *> parseBool)
+    optionField = EnumOption <$> parseOption
     reservedField =
       EnumReserved
         <$> (string "reserved" *> spaces' *> reservedValues)

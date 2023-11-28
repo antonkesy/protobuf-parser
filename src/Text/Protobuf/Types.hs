@@ -106,7 +106,7 @@ data EnumReservedValues
 
 data EnumField
   = EnumValue Name EnumNumber [FieldOption]
-  | EnumOption Name Bool
+  | EnumOption Option
   | EnumReserved EnumReservedValues
   deriving (Show, Eq)
 
@@ -341,10 +341,8 @@ instance Pretty EnumField where
           <+> pretty number
           <+> prettyList opt
       ]
-  pretty (EnumOption name value) =
-    pretty name
-      <+> pretty "="
-      <+> pretty value
+  pretty (EnumOption option) =
+    pretty option
   pretty (EnumReserved values) =
     pretty values
 
