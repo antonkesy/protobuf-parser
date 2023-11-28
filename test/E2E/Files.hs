@@ -71,8 +71,8 @@ testFiles = TestCase $ do
             [ Text.Protobuf.Types.Enum
                 "Data"
                 [ EnumValue "DATA_UNSPECIFIED" 0 [],
-                  EnumValue "DATA_SEARCH" 1 [FieldOption "deprecated" (BoolValue True)],
-                  EnumValue "DATA_DISPLAY" 2 [FieldOption "(string_name)" (StringValue "display_value")]
+                  EnumValue "DATA_SEARCH" 1 [FieldOption "deprecated" (ConstantBoolLit True)],
+                  EnumValue "DATA_DISPLAY" 2 [FieldOption "(string_name)" (ConstantStrLit "display_value")]
                 ]
             ],
           messages = [],

@@ -13,26 +13,26 @@ allTests =
   ]
 
 testOption :: Option
-testOption = Option ("test") (StringValue ("fail"))
+testOption = Option ("test") (ConstantStrLit ("fail"))
 
 testImport :: Test
 testImport = TestCase $ do
-  assertEqual "empty" False (isRight (parse parseOption "" ""))
+  assertEqual "empty" False (isRight (parse option "" ""))
   assertEqual
     "java_package"
-    (Option "java_package" (StringValue "de.test"))
-    (fromRight testOption (parse parseOption "" "option java_package = \"de.test\";"))
+    (Option "java_package" (ConstantStrLit "de.test"))
+    (fromRight testOption (parse option "" "option java_package = \"de.test\";"))
   assertEqual
     "bool option"
-    (Option "cc_enable_arenas" (BoolValue True))
-    (fromRight testOption (parse parseOption "" "option cc_enable_arenas = true;"))
+    (Option "cc_enable_arenas" (ConstantBoolLit True))
+    (fromRight testOption (parse option "" "option cc_enable_arenas = true;"))
   assertEqual
     "compund option"
-    (Option "optimize_for" (CompoundValue "SPEED"))
-    (fromRight testOption (parse parseOption "" "option optimize_for = SPEED;"))
+    (Option "optimize_for" (ConstantFullIdent "SPEED"))
+    (fromRight testOption (parse option "" "option optimize_for = SPEED;"))
 
 testDefaultFieldOption :: [FieldOption]
-testDefaultFieldOption = [FieldOption ("test") (StringValue ("fail"))]
+testDefaultFieldOption = [FieldOption ("test") (ConstantStrLit ("fail"))]
 
 testFieldOption :: Test
 testFieldOption = TestCase $ do
@@ -40,12 +40,12 @@ testFieldOption = TestCase $ do
   assertEqual "missing content" False (isRight (parse parseFieldOption "" "[]"))
   assertEqual
     "single bool option"
-    ([FieldOption ("deprecated") (BoolValue True)])
+    ([FieldOption ("deprecated") (ConstantBoolLit True)])
     (fromRight testDefaultFieldOption (parse parseFieldOption "" "[deprecated = true]"))
   assertEqual
     "multi bool option"
-    ( [ (FieldOption ("deprecated") (BoolValue True)),
-        (FieldOption ("other") (BoolValue False))
+    ( [ (FieldOption ("deprecated") (ConstantBoolLit True)),
+        (FieldOption ("other") (ConstantBoolLit False))
       ]
     )
     (fromRight testDefaultFieldOption (parse parseFieldOption "" "[deprecated = true, other = false]"))

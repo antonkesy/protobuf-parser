@@ -3,7 +3,7 @@ module Text.Protobuf.Parser.Syntax (parseSyntax, parseSyntax') where
 import qualified Data.Maybe
 import Text.Parsec
 import Text.Parsec.String
-import Text.Protobuf.Parser.Space (spaces')
+import Text.Protobuf.Parser.LexicalElement.Space (spaces')
 import Text.Protobuf.Types
 
 parseSyntax' :: Protobuf -> Parser Protobuf

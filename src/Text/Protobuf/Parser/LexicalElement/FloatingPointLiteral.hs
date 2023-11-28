@@ -6,7 +6,6 @@ where
 import Text.Parsec
 import Text.Parsec.String
 import Text.Protobuf.Parser.LexicalElement.Digit
-import Text.Protobuf.Parser.Space
 import Text.Protobuf.Types
 import Prelude hiding (exponent)
 

@@ -17,10 +17,10 @@ strLit = do
 -- strLitSingle = ( "'" { charValue } "'" ) |  ( '"' { charValue } '"' )
 strLitSingle :: Parser StringLiteralSingle
 strLitSingle = do
-  c <- oneOf "'\""
-  cs <- many anyChar
-  c' <- oneOf "'\""
-  return ((c : cs) ++ [c'])
+  _ <- oneOf "'\""
+  cs <- (anyChar `manyTill` oneOf "'\"")
+  -- TODO: start and end with same: ' and "
+  return cs
 
 -- TODO:
 -- charValue = hexEscape | octEscape | charEscape | unicodeEscape | unicodeLongEscape | /[^\0\n\\]/

@@ -4,6 +4,7 @@ import Unit.Text.Protobuf.Parser as Protobuf
 import Unit.Text.Protobuf.Parser.Comment as Comment
 import Unit.Text.Protobuf.Parser.Enum as Unit
 import Unit.Text.Protobuf.Parser.Import as Import
+import Unit.Text.Protobuf.Parser.LexicalElement.Constant as Constant
 import Unit.Text.Protobuf.Parser.Message as Message
 import Unit.Text.Protobuf.Parser.Option as Option
 import Unit.Text.Protobuf.Parser.Package as Package
@@ -26,5 +27,6 @@ main =
             ++ Files.allTests
             ++ Syntax.allTests
             ++ Option.allTests
+            ++ Constant.allTests
         )
     )

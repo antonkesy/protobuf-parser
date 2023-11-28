@@ -114,7 +114,7 @@ testFieldOptionProto =
         (Scalar (IntType Int32))
         "foo"
         1
-        [FieldOption "default" (BoolValue True)]
+        [FieldOption "default" (ConstantBoolLit True)]
     ]
 
 testSimple :: Test

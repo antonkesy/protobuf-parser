@@ -5,7 +5,7 @@ where
 
 import Text.Parsec
 import Text.Parsec.String
-import Text.Protobuf.Parser.Space (spaces')
+import Text.Protobuf.Parser.LexicalElement.Space (spaces')
 import Text.Protobuf.Types
 
 -- TODO: rename parseName
@@ -50,7 +50,7 @@ parseScalarType =
     <|> try (string "string" >> return StringType)
     <|> try (string "bytes" >> return BytesType)
 
-parseMap :: Parser DataType
+parseMap :: Parser FieldType
 parseMap =
   Map
     <$> ( string "map"
@@ -67,19 +67,6 @@ parseMap =
             <* char '>'
             <* spaces'
         )
-
-parseDataType :: Parser DataType
-parseDataType =
-  Scalar
-    <$> parseScalarType
-      <|> Compound
-    <$> protoName
-
-parseBool :: Parser Bool
-parseBool =
-  try (string "true" >> return True)
-    <|> (string "false" >> return False)
-    <?> "Expected true or false"
 
 -- TODO: replace all
 parseString :: Parser String

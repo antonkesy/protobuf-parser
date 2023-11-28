@@ -1,14 +1,17 @@
-module Text.Protobuf.Parser.Option (parseOption, parseOption', parseFieldOption) where
+module Text.Protobuf.Parser.Option (option, optionName, parseOption', parseFieldOption) where
 
-import Text.Parsec
+import Text.Parsec hiding (option)
 import Text.Parsec.String
-import Text.Protobuf.Parser.Space (spaces', spaces1)
-import Text.Protobuf.Parser.Type (parseBool, parseCustomName, parseString, protoName)
+import Text.Protobuf.Parser.LexicalElement.Boolean
+import Text.Protobuf.Parser.LexicalElement.Constant
+import Text.Protobuf.Parser.LexicalElement.Identifier
+import Text.Protobuf.Parser.LexicalElement.Space (spaces', spaces1)
+import Text.Protobuf.Parser.Type (parseCustomName, parseString, protoName)
 import Text.Protobuf.Types
 
 parseOption' :: Protobuf -> Parser Protobuf
 parseOption' p = do
-  opt <- parseOption
+  opt <- option
   return
     ( Text.Protobuf.Types.merge
         p
@@ -18,27 +21,33 @@ parseOption' p = do
 -- https://protobuf.dev/programming-guides/proto3/#options
 -- TODO: value can be bool, string, protoname until ';'
 
-parseOption :: Parser Option
-parseOption =
+-- option = "option" optionName  "=" constant ";"
+option :: Parser Option
+option =
   Option
     <$> ( spaces'
             *> string "option"
             *> spaces1
-            *> protoName
+            *> optionName
             <* spaces1
         )
     <*> ( spaces'
             *> char '='
             *> spaces'
-            *> ( (StringValue <$> try parseString)
-                   <|> (BoolValue <$> try parseBool)
-                   <|> (CompoundValue <$> try protoName)
-               )
+            *> constant
             <* spaces'
             <* char ';'
         )
 
-parseFieldOption :: Parser [FieldOption]
+-- optionName = ( ident | "(" ["."] fullIdent ")" )
+optionName :: Parser String
+optionName = do
+  -- TODO
+  try ident
+    <|> try (char '(' *> char '.' *> fullIdent <* char ')')
+    <|> try (char '(' *> fullIdent <* char ')')
+
+parseFieldOption :: Parser [Option]
 parseFieldOption =
   start
     *> try ((try singleFieldOption `sepBy1` try (char ',')) <* end)
@@ -50,12 +59,9 @@ parseFieldOption =
       spaces'
         *> char '='
         *> spaces'
-        *> ( (StringValue <$> try parseString)
-               <|> (BoolValue <$> try parseBool)
-               <|> (CompoundValue <$> try protoName)
-           )
+        *> constant
         <* spaces'
     singleFieldOption =
-      FieldOption
+      Option
         <$> name
         <*> value

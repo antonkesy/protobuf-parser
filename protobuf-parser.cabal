@@ -29,6 +29,10 @@ library
       Text.Protobuf.Parser.Comment
       Text.Protobuf.Parser.EndOfLine
       Text.Protobuf.Parser.Enum
+      Text.Protobuf.Parser.Field
+      Text.Protobuf.Parser.Field.Map
+      Text.Protobuf.Parser.Field.Normal
+      Text.Protobuf.Parser.Field.OneOf
       Text.Protobuf.Parser.Import
       Text.Protobuf.Parser.LexicalElement.Boolean
       Text.Protobuf.Parser.LexicalElement.Constant
@@ -45,7 +49,6 @@ library
       Text.Protobuf.Parser.Package
       Text.Protobuf.Parser.Reserved
       Text.Protobuf.Parser.Service
-      Text.Protobuf.Parser.Space
       Text.Protobuf.Parser.Syntax
       Text.Protobuf.Parser.Type
       Text.Protobuf.Types
@@ -87,6 +90,7 @@ test-suite protobuf-parser-test
       Unit.Text.Protobuf.Parser.Comment
       Unit.Text.Protobuf.Parser.Enum
       Unit.Text.Protobuf.Parser.Import
+      Unit.Text.Protobuf.Parser.LexicalElement.Constant
       Unit.Text.Protobuf.Parser.Message
       Unit.Text.Protobuf.Parser.Option
       Unit.Text.Protobuf.Parser.Package

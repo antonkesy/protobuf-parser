@@ -81,8 +81,8 @@ enumFieldOptionProto =
   Text.Protobuf.Types.Enum
     "TestEnum"
     [ EnumValue "UNKNOWN" 0 [],
-      EnumValue "STARTED" 1 [FieldOption "deprecated" (BoolValue True)],
-      EnumValue "RUNNING" 1 [FieldOption "deprecated" (BoolValue False)]
+      EnumValue "STARTED" 1 [FieldOption "deprecated" (ConstantBoolLit True)],
+      EnumValue "RUNNING" 1 [FieldOption "deprecated" (ConstantBoolLit False)]
     ]
 
 testEnumParser :: Test

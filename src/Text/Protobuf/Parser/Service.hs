@@ -2,7 +2,7 @@ module Text.Protobuf.Parser.Service (parseService, parseService') where
 
 import Text.Parsec
 import Text.Parsec.String
-import Text.Protobuf.Parser.Space (spaces', spaces1)
+import Text.Protobuf.Parser.LexicalElement.Space (spaces', spaces1)
 import Text.Protobuf.Parser.Type
 import Text.Protobuf.Types
 

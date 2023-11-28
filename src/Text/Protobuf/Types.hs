@@ -1,7 +1,6 @@
 module Text.Protobuf.Types (module Text.Protobuf.Types) where
 
 import Data.Word (Word32)
-import Prettyprinter
 
 type Identifier = String
 
@@ -47,17 +46,33 @@ data Constant
   | ConstantFloatLit FloatLit
   | ConstantStrLit StringLiteral
   | ConstantBoolLit Bool
-  deriving (-- | ConstantMessageValue MessageValue
-            Show, Eq)
+  deriving
+    ( -- | ConstantMessageValue MessageValue
+      Show,
+      Eq
+    )
 
 -- type MessageValue = String
+
+type OptionName = String
+
+data Field
+  = NormalField Bool FieldType Name FieldNumber [FieldOption]
+  | OneOfField FieldType Name FieldNumber [FieldOption]
+  | OneOf OneofName [Either Option Field] -- TODO: can only be onoffield
+  | MapField MapKeyType FieldType Name FieldNumber [FieldOption]
+  deriving (Show, Eq)
+
+type MapKeyType = String -- TODO: replace string
+
+type Range = [Int]
 
 -----------------------
 type FieldNumber = Int
 
 type Repeat = Bool
 
-type EnumNumber = Word32
+type EnumNumber = Int
 
 type Name = String
 
@@ -111,7 +126,7 @@ data MapValue
   | ScalarType
   deriving (Show, Eq)
 
-data DataType
+data FieldType
   = Scalar ScalarType
   | Compound Name
   | Map MapKey MapValue
@@ -124,14 +139,14 @@ data OptionValue
   deriving (Show, Eq)
 
 data FieldOption
-  = FieldOption Name OptionValue
+  = FieldOption OptionName Constant
   | MultipleFieldOption [FieldOption]
   deriving (Show, Eq)
 
 data MessageField
-  = ImplicitMessageField DataType Name FieldNumber [FieldOption]
-  | OptionalMessageField DataType Name FieldNumber [FieldOption]
-  | RepeatedMessageField DataType Name FieldNumber [FieldOption]
+  = ImplicitMessageField FieldType Name FieldNumber [FieldOption]
+  | OptionalMessageField FieldType Name FieldNumber [FieldOption]
+  | RepeatedMessageField FieldType Name FieldNumber [FieldOption]
   | MessageReserved MessageReservedValues
   | OneOfMessageField Name [MessageField]
   deriving (Show, Eq)
@@ -148,6 +163,9 @@ data MessageReservedValues
   | ReservedMessageNames ReservedNames
   deriving (Show, Eq)
 
+data Reserved = Reserved (Either [Range] [Name])
+  deriving (Show, Eq)
+
 -- TODO: make reserved type generic
 data EnumReservedValues
   = ReservedEnumNumbers [EnumNumber]
@@ -156,8 +174,9 @@ data EnumReservedValues
 
 data EnumField
   = EnumValue Name EnumNumber [FieldOption]
-  | EnumOption Name Bool
-  | EnumReserved EnumReservedValues
+  | EnumOption Option
+  | EnumReserved Reserved
+  | EnumEmptyStatement
   deriving (Show, Eq)
 
 data Enum
@@ -183,7 +202,7 @@ data RPC
   deriving (Show, Eq)
 
 data Option
-  = Option Name OptionValue
+  = Option OptionName Constant
   deriving (Show, Eq)
 
 data Syntax
@@ -247,211 +266,3 @@ merge a b =
       | otherwise = error "Conflicting syntax versions"
 
 ------------------------------------------------------------
-
-instance Pretty Protobuf where
-  pretty protobuf =
-    vsep
-      [ pretty "Protobuf",
-        pretty "{",
-        indent 2 (pretty "syntax =" <+> pretty (syntax protobuf) <> pretty ","),
-        indent 2 (pretty "package =" <+> pretty (package protobuf) <> pretty ","),
-        indent 2 (pretty "imports =" <+> pretty (imports protobuf) <> pretty ","),
-        indent 2 (pretty "options =" <+> pretty (options protobuf) <> pretty ","),
-        indent 2 (pretty "enums =" <+> pretty (enums protobuf) <> pretty ","),
-        indent 2 (pretty "messages =" <+> pretty (messages protobuf) <> pretty ","),
-        indent 2 (pretty "services =" <+> pretty (services protobuf)),
-        pretty "}"
-      ]
-
-instance Pretty FloatType where
-  pretty Double = pretty "double"
-  pretty Float = pretty "float"
-
-instance Pretty ScalarType where
-  pretty (IntType intType) = pretty intType
-  pretty (FloatType floatType) = pretty floatType
-  pretty StringType = pretty "string"
-  pretty BytesType = pretty "bytes"
-  pretty BoolType = pretty "bool"
-
-instance Pretty IntType where
-  pretty Int32 = pretty "int32"
-  pretty Int64 = pretty "int64"
-  pretty UInt32 = pretty "uint32"
-  pretty UInt64 = pretty "uint64"
-  pretty SInt32 = pretty "sint32"
-  pretty SInt64 = pretty "sint64"
-  pretty Fixed32 = pretty "fixed32"
-  pretty Fixed64 = pretty "fixed64"
-  pretty SFixed32 = pretty "sfixed32"
-  pretty SFixed64 = pretty "sfixed64"
-
-instance Pretty Message where
-  pretty (Message name fields) =
-    vsep
-      [ pretty "message"
-          <+> pretty name
-          <+> pretty "{",
-        indent 3 (vsep (map pretty fields)),
-        indent 2 (pretty "}")
-      ]
-
-instance Pretty FieldOption where
-  pretty (FieldOption name value) =
-    pretty name
-      <+> pretty "="
-      <+> pretty value
-  pretty (MultipleFieldOption opt) =
-    vsep
-      [ pretty "[",
-        indent 2 (prettyList opt),
-        pretty "]"
-      ]
-
-instance Pretty OptionValue where
-  pretty (StringValue s) = dquotes (pretty s)
-  pretty (BoolValue b) = pretty b
-  pretty (CompoundValue name) = pretty name
-
-instance Pretty MapKey where
-  pretty (StringKey s) = dquotes (pretty s)
-  pretty (IntKey intType) = pretty intType
-
-instance Pretty MapValue where
-  pretty (MapName name) = pretty name
-  pretty s = pretty s
-
-instance Pretty DataType where
-  pretty (Scalar st) = pretty st
-  pretty (Compound name) = pretty name
-  pretty (Map key value) =
-    pretty "map"
-      <+> pretty key
-      <+> pretty "=>"
-      <+> pretty value
-
-instance Pretty MessageField where
-  pretty (ImplicitMessageField dt name fieldNum opt) =
-    vsep
-      [ pretty dt,
-        pretty name
-          <+> pretty "="
-          <+> pretty fieldNum
-          <+> prettyList opt
-      ]
-  pretty (OptionalMessageField dt name fieldNum opt) =
-    vsep
-      [ pretty "optional"
-          <+> pretty dt,
-        pretty name
-          <+> pretty "="
-          <+> pretty fieldNum
-          <+> prettyList opt
-      ]
-  pretty (RepeatedMessageField dt name fieldNum opt) =
-    vsep
-      [ pretty "repeated"
-          <+> pretty dt,
-        pretty name
-          <+> pretty "="
-          <+> pretty fieldNum
-          <+> prettyList opt
-      ]
-  pretty (MessageReserved values) = pretty values
-  pretty (OneOfMessageField name fields) =
-    vsep
-      [ pretty "oneof"
-          <+> pretty name
-          <+> pretty "{",
-        indent 2 (vsep (map pretty fields)),
-        pretty "}"
-      ]
-
-instance Pretty MessageReservedValues where
-  pretty (ReservedMessageNumbers numbers) =
-    pretty "reserved"
-      <+> hsep (map pretty numbers)
-  pretty (ReservedMessageNames (ReservedNames names)) =
-    pretty "reserved"
-      <+> hsep (map pretty names)
-
-instance Pretty EnumReservedValues where
-  pretty (ReservedEnumNumbers numbers) =
-    pretty "reserved"
-      <+> hsep (map pretty numbers)
-  pretty (ReservedEnumNames (ReservedNames names)) =
-    pretty "reserved"
-      <+> hsep (map pretty names)
-
-instance Pretty EnumField where
-  pretty (EnumValue name number opt) =
-    vsep
-      [ pretty name
-          <+> pretty "="
-          <+> pretty number
-          <+> prettyList opt
-      ]
-  pretty (EnumOption name value) =
-    pretty name
-      <+> pretty "="
-      <+> pretty value
-  pretty (EnumReserved values) =
-    pretty values
-
-instance Pretty Text.Protobuf.Types.Enum where
-  pretty (Enum name fields) =
-    vsep
-      [ pretty "enum"
-          <+> pretty name
-          <+> pretty "{",
-        indent 2 (vsep (map pretty fields)),
-        pretty "}"
-      ]
-
-instance Pretty Service where
-  pretty (Service name rpcs) =
-    vsep
-      [ pretty "service"
-          <+> pretty name
-          <+> pretty "{",
-        indent 2 (vsep (map pretty rpcs)),
-        pretty "}"
-      ]
-
-instance Pretty RequestType where
-  pretty (RequestType name) =
-    pretty name
-  pretty (RequestTypeStream name) =
-    pretty "stream"
-      <+> pretty name
-
-instance Pretty ReplyType where
-  pretty (ReplyType name) =
-    pretty name
-  pretty (ReplyTypeStream name) =
-    pretty "stream"
-      <+> pretty name
-
-instance Pretty RPC where
-  pretty (RPC name reqType replyType) =
-    vsep
-      [ pretty "rpc"
-          <+> pretty name
-          <+> pretty "(",
-        pretty reqType,
-        pretty ")"
-          <+> pretty "returns"
-          <+> pretty replyType
-      ]
-
-instance Pretty Option where
-  pretty (Option name value) =
-    pretty name
-      <+> pretty "="
-      <+> pretty value
-
-instance Pretty Syntax where
-  pretty Proto2 =
-    pretty "syntax = \"proto2\""
-  pretty Proto3 =
-    pretty "syntax = \"proto3\""

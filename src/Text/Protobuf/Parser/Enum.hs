@@ -1,38 +1,40 @@
 module Text.Protobuf.Parser.Enum
-  ( parseEnum,
+  ( enum,
     parseEnum',
-    parseEnumField,
-    enumNumber,
-    enumNumberRange,
-    protoName,
-    reservedNumbers,
   )
 where
 
-import Text.Parsec
+import Text.Parsec hiding (option)
 import Text.Parsec.String
+import Text.Protobuf.Parser.LexicalElement.Boolean
+import Text.Protobuf.Parser.LexicalElement.Constant
+import Text.Protobuf.Parser.LexicalElement.EmptyStatement
+import Text.Protobuf.Parser.LexicalElement.Identifier
+import Text.Protobuf.Parser.LexicalElement.IntegerLiteral
+import Text.Protobuf.Parser.LexicalElement.Space (spaces', spaces1)
+import Text.Protobuf.Parser.LexicalElement.StringLiteral
 import Text.Protobuf.Parser.Option
 import Text.Protobuf.Parser.Reserved
-import Text.Protobuf.Parser.Space (spaces', spaces1)
 import Text.Protobuf.Parser.Type
 import Text.Protobuf.Types
 
 parseEnum' :: Protobuf -> Parser Protobuf
 parseEnum' p = do
-  x <- parseEnum
+  x <- enum
   return
     ( Text.Protobuf.Types.merge
         p
         (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [x], messages = [], services = []})
     )
 
-parseEnum :: Parser Text.Protobuf.Types.Enum
-parseEnum =
+-- enum = "enum" enumName enumBody
+enum :: Parser Text.Protobuf.Types.Enum
+enum =
   Text.Protobuf.Types.Enum
     <$> ( spaces'
             *> string "enum"
             *> spaces1
-            *> name
+            *> enumName
         )
     <*> ( spaces'
             *> char '{'
@@ -43,41 +45,40 @@ parseEnum =
             <* spaces'
         )
   where
-    name = protoName
-    fields = try parseEnumField `sepEndBy1` char ';'
+    fields = try enumField `sepEndBy1` char ';'
 
-parseEnumField :: Parser EnumField
-parseEnumField =
-  spaces' *> (try reservedField <|> try optionField <|> try valueField)
-  where
-    fieldName = spaces' *> protoName
-    fieldNumber = spaces' *> char '=' *> spaces' *> enumNumber
-    reservedValues =
-      try (ReservedEnumNames <$> reservedNames)
-        <|> try (ReservedEnumNumbers <$> reservedNumbers enumNumber enumNumberRange)
-    valueField =
-      EnumValue
-        <$> fieldName
-        <*> fieldNumber
-        <*> (try parseFieldOption <|> return [])
-    optionField =
-      EnumOption
-        <$> (string "option" *> spaces1 *> protoName)
-        <*> (spaces1 *> char '=' *> spaces' *> parseBool)
-    reservedField =
-      EnumReserved
-        <$> (string "reserved" *> spaces' *> reservedValues)
+-- enumBody = "{" { option | enumField | emptyStatement | reserved } "}"
+enumBody :: Parser [EnumField]
+enumBody =
+  spaces'
+    *> char '{'
+    *> spaces'
+    *> (many (try (EnumReserved <$> reserved) <|> try enumField <|> try (EnumOption <$> option) <|> try (emptyStatement >> return EnumEmptyStatement)))
+    <* spaces'
+    <* char '}'
+    <* spaces'
 
-enumNumber :: Parser EnumNumber
-enumNumber =
-  do
-    n <- read <$> many1 digit
-    if n >= (minBound :: EnumNumber) && n <= (maxBound :: EnumNumber)
-      then return n
-      else fail "Number not in valid range"
+-- enumField = ident "=" [ "-" ] intLit [ "[" enumValueOption { ","  enumValueOption } "]" ]";"
+enumField :: Parser EnumField
+enumField =
+  EnumValue
+    <$> ident
+    <* char '='
+    <* spaces' -- TODO: (-)
+    <*> intLit
+    <*> (try enumValueOption `sepBy` char ',' <|> return [])
 
-enumNumberRange :: Parser EnumNumber
-enumNumberRange =
-  enumNumber
-    <|> try (string "min" >> return 0)
-    <|> try (string "max" >> return 0xFFFFFFFF)
+-- enumValueOption = optionName "=" constant
+enumValueOption :: Parser FieldOption
+enumValueOption =
+  FieldOption
+    <$> ( spaces'
+            *> optionName
+            <* spaces'
+            <* char '='
+            <* spaces'
+        )
+    <*> ( spaces'
+            *> constant
+            <* spaces'
+        )

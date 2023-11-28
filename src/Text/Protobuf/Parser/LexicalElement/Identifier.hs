@@ -19,7 +19,7 @@ ident = do
 fullIdent :: Parser FullIdentifier
 fullIdent = do
   first <- ident
-  rest <- many (char '.' >> ident)
+  rest <- many ((:) <$> char '.' <*> ident)
   return $ first ++ concat rest
 
 -- messageName = ident

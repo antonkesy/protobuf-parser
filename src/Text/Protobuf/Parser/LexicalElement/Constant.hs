@@ -15,11 +15,11 @@ import Text.Protobuf.Types
 -- constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) | strLit | boolLit | MessageValue
 constant :: Parser Constant
 constant =
-  try (ConstantFullIdent <$> fullIdent)
-    <|> try (ConstantIntLit <$> intLit)
-    <|> try (ConstantFloatLit <$> floatLit)
-    <|> try (ConstantStrLit <$> strLit)
-    <|> try (ConstantBoolLit <$> boolLit)
+  (ConstantBoolLit <$> try boolLit)
+    <|> (ConstantFloatLit <$> try floatLit)
+    <|> (ConstantIntLit <$> try intLit)
+    <|> (ConstantStrLit <$> try strLit)
+    <|> (ConstantFullIdent <$> try fullIdent)
     -- <|> try (ConstantMessageValue <$> messageValue)
     <?> "Expected constant"
 
