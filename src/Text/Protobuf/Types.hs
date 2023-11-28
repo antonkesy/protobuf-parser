@@ -84,6 +84,8 @@ data MessageField
   | RepeatedMessageField DataType Name FieldNumber [FieldOption]
   | MessageReserved MessageReservedValues
   | OneOfMessageField Name [MessageField]
+  | EnumMessageField Text.Protobuf.Types.Enum
+  | OptionMessageField Option
   deriving (Show, Eq)
 
 data Message
@@ -316,6 +318,10 @@ instance Pretty MessageField where
         indent 2 (vsep (map pretty fields)),
         pretty "}"
       ]
+  pretty (OptionMessageField option) =
+    pretty option
+  pretty (EnumMessageField enum) =
+    pretty enum
 
 instance Pretty MessageReservedValues where
   pretty (ReservedMessageNumbers numbers) =

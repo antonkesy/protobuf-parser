@@ -2,6 +2,7 @@ module Text.Protobuf.Parser.Message (parseMessage, parseMessage') where
 
 import Text.Parsec
 import Text.Parsec.String
+import Text.Protobuf.Parser.Enum
 import Text.Protobuf.Parser.Option
 import Text.Protobuf.Parser.Reserved
 import Text.Protobuf.Parser.Space (spaces', spaces1)
@@ -47,6 +48,8 @@ parseMessageField =
            <|> try repeatedField
            <|> try reservedField
            <|> try oneofField
+           <|> (OptionMessageField <$> try parseOption)
+           <|> (EnumMessageField <$> try parseEnum)
        )
   where
     fieldName = spaces' *> protoName

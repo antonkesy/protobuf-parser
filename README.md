@@ -1,15 +1,18 @@
 # protobuf-parser
 
-protobuf 3 + gRPC parser using parsec
+simplified protobuf 3 + gRPC parser using parsec
 
 Only syntax 3 is supported!
 
-no checks for correctness of values -> only syntax
+no everytying is checked for correctness of values -> only syntax
 
-Applicative style <*>, *>, ...
+parsec Applicative style <_>, _>, ...
 
-TODO: rework according to https://protobuf.dev/reference/protobuf/proto3-spec/
 TODO: add documentation
 
 `stack run`
 `stack test`
+
+## Simplifications
+
+- Base Lexical Elements do not strictly follow [offical spec](https://protobuf.dev/reference/protobuf/proto3-spec/#lexical_elements)

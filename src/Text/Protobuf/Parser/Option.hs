@@ -15,9 +15,6 @@ parseOption' p = do
         (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [opt], enums = [], messages = [], services = []})
     )
 
--- https://protobuf.dev/programming-guides/proto3/#options
--- TODO: value can be bool, string, protoname until ';'
-
 parseOption :: Parser Option
 parseOption =
   Option
