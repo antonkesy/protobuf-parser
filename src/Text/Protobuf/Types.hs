@@ -3,6 +3,56 @@ module Text.Protobuf.Types (module Text.Protobuf.Types) where
 import Data.Word (Word32)
 import Prettyprinter
 
+type Identifier = String
+
+type FullIdentifier = Identifier
+
+type MessageName = Identifier
+
+type EnumName = Identifier
+
+type FieldName = Identifier
+
+type OneofName = Identifier
+
+type MapName = Identifier
+
+type ServiceName = Identifier
+
+type RpcName = Identifier
+
+type MessageType = String
+
+type EnumType = String
+
+type IntLit = Int
+
+type DecimalLit = Int
+
+type HexLit = Int
+
+type OctalLit = Int
+
+type FloatLit = Float
+
+type StringLiteral = String
+
+type StringLiteralSingle = StringLiteral
+
+type EmptyStatement = ()
+
+data Constant
+  = ConstantFullIdent FullIdentifier
+  | ConstantIntLit IntLit
+  | ConstantFloatLit FloatLit
+  | ConstantStrLit StringLiteral
+  | ConstantBoolLit Bool
+  deriving (-- | ConstantMessageValue MessageValue
+            Show, Eq)
+
+-- type MessageValue = String
+
+-----------------------
 type FieldNumber = Int
 
 type Repeat = Bool
@@ -13,9 +63,9 @@ type Name = String
 
 type Value = String
 
-type MessageName = String
+-- type MessageName = String
 
-type EnumName = String
+-- type EnumName = String
 
 type RPCName = String
 

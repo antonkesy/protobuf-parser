@@ -30,6 +30,16 @@ library
       Text.Protobuf.Parser.EndOfLine
       Text.Protobuf.Parser.Enum
       Text.Protobuf.Parser.Import
+      Text.Protobuf.Parser.LexicalElement.Boolean
+      Text.Protobuf.Parser.LexicalElement.Constant
+      Text.Protobuf.Parser.LexicalElement.Digit
+      Text.Protobuf.Parser.LexicalElement.EmptyStatement
+      Text.Protobuf.Parser.LexicalElement.FloatingPointLiteral
+      Text.Protobuf.Parser.LexicalElement.Identifier
+      Text.Protobuf.Parser.LexicalElement.IntegerLiteral
+      Text.Protobuf.Parser.LexicalElement.Letter
+      Text.Protobuf.Parser.LexicalElement.Space
+      Text.Protobuf.Parser.LexicalElement.StringLiteral
       Text.Protobuf.Parser.Message
       Text.Protobuf.Parser.Option
       Text.Protobuf.Parser.Package
