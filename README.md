@@ -17,7 +17,7 @@ Available options:
 
 ```bash
 stack run -- -p -f ./test/E2E/protofiles/chat.proto
-stack run -- -p "import \"foo.proto\"; import \"bar.proto\"; package foobar;"
+stack run -- -p "message SearchRequest { int32 page_number = 2; double results_per_page = 3; }"
 stack run "import \"foo.proto\"; import \"bar.proto\"; package foobar;"
 
 stack test
