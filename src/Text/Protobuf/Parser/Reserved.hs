@@ -12,7 +12,13 @@ import Text.Protobuf.Types
 reservedNames :: Parser ReservedNames
 reservedNames =
   ReservedNames
-    <$> try (spaces' *> char '\"' *> protoName <* char '\"') `sepBy1` char ','
+    <$> try
+      ( spaces'
+          *> char '\"'
+          *> protoName
+          <* char '\"'
+      )
+      `sepBy1` char ','
 
 reservedNumbers :: (Integral a) => Parser a -> Parser a -> Parser [a]
 reservedNumbers single range =

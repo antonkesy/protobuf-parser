@@ -11,12 +11,23 @@ parseSyntax' p = do
   syn <- parseSyntax
   if Data.Maybe.isJust (syntax p)
     then unexpected ": There can only be one syntax definition per file"
-    else
-      return
-        ( Text.Protobuf.Types.merge
-            p
-            (Protobuf {syntax = Just syn, package = Nothing, imports = [], options = [], enums = [], messages = [], services = []})
-        )
+    else case syn of
+      Proto2 -> fail "Proto2 is not supported"
+      Proto3 -> do
+        return
+          ( Text.Protobuf.Types.merge
+              p
+              ( Protobuf
+                  { syntax = Just syn,
+                    package = Nothing,
+                    imports = [],
+                    options = [],
+                    enums = [],
+                    messages = [],
+                    services = []
+                  }
+              )
+          )
 
 parseSyntax :: Parser Syntax
 parseSyntax =

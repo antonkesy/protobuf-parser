@@ -85,10 +85,31 @@ streamReplyService =
 
 testSimple :: Test
 testSimple = TestCase $ do
-  assertEqual "empty" False (isRight (parse parseService "" ""))
-  assertEqual "keyword only" False (isRight (parse parseService "" "message"))
-  assertEqual "missing name" False (isRight (parse parseService "" "message {}"))
-  assertEqual "emptyMessage" simpleService (fromRight failMessage (parse parseService "" simpleServiceText))
-  assertEqual "multiple" multipleService (fromRight failMessage (parse parseService "" multipleServiceText))
-  assertEqual "stream request" streamRequestService (fromRight failMessage (parse parseService "" streamRequestServiceText))
-  assertEqual "stream reply" streamReplyService (fromRight failMessage (parse parseService "" streamReplyServiceText))
+  assertEqual
+    "empty"
+    False
+    (isRight (parse parseService "" ""))
+  assertEqual
+    "keyword only"
+    False
+    (isRight (parse parseService "" "message"))
+  assertEqual
+    "missing name"
+    False
+    (isRight (parse parseService "" "message {}"))
+  assertEqual
+    "emptyMessage"
+    simpleService
+    (fromRight failMessage (parse parseService "" simpleServiceText))
+  assertEqual
+    "multiple"
+    multipleService
+    (fromRight failMessage (parse parseService "" multipleServiceText))
+  assertEqual
+    "stream request"
+    streamRequestService
+    (fromRight failMessage (parse parseService "" streamRequestServiceText))
+  assertEqual
+    "stream reply"
+    streamReplyService
+    (fromRight failMessage (parse parseService "" streamReplyServiceText))

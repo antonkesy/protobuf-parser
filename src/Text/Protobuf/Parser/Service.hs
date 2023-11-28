@@ -12,7 +12,16 @@ parseService' p = do
   return
     ( Text.Protobuf.Types.merge
         p
-        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [], messages = [], services = [x]})
+        ( Protobuf
+            { syntax = Nothing,
+              package = Nothing,
+              imports = [],
+              options = [],
+              enums = [],
+              messages = [],
+              services = [x]
+            }
+        )
     )
 
 parseService :: Parser Service
@@ -58,6 +67,12 @@ parseServiceField =
     <* spaces'
   where
     request = RequestType <$> protoName
-    requestStream = string "stream" *> spaces1 *> (RequestTypeStream <$> protoName)
+    requestStream =
+      string "stream"
+        *> spaces1
+        *> (RequestTypeStream <$> protoName)
     reply = ReplyType <$> protoName
-    replyStream = string "stream" *> spaces1 *> (ReplyTypeStream <$> protoName)
+    replyStream =
+      string "stream"
+        *> spaces1
+        *> (ReplyTypeStream <$> protoName)

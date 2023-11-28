@@ -119,14 +119,47 @@ testFieldOptionProto =
 
 testSimple :: Test
 testSimple = TestCase $ do
-  assertEqual "empty" False (isRight (parse parseMessage "" ""))
-  assertEqual "keyword only" False (isRight (parse parseMessage "" "message"))
-  assertEqual "missing name" False (isRight (parse parseMessage "" "message {}"))
-  assertEqual "emptyMessage" (Message "Foo" []) (fromRight failMessage (parse parseMessage "" "message Foo {}"))
-  assertEqual "simple" testMessage1Proto (fromRight failMessage (parse parseMessage "" testMessage1))
-  assertEqual "reserved" testMessageReservedProto (fromRight failMessage (parse parseMessage "" testMessageReserved))
-  assertEqual "optional" testOptionalProto (fromRight failMessage (parse parseMessage "" testOptional))
-  assertEqual "repeated" testRepeatedProto (fromRight failMessage (parse parseMessage "" testRepeated))
-  assertEqual "reserved names" testReservedNamesProto (fromRight failMessage (parse parseMessage "" testReservedNames))
-  assertEqual "oneof" testOneOfProto (fromRight failMessage (parse parseMessage "" testOneOf))
-  assertEqual "field option" testFieldOptionProto (fromRight failMessage (parse parseMessage "" testFieldOption))
+  assertEqual
+    "empty"
+    False
+    (isRight (parse parseMessage "" ""))
+  assertEqual
+    "keyword only"
+    False
+    (isRight (parse parseMessage "" "message"))
+  assertEqual
+    "missing name"
+    False
+    (isRight (parse parseMessage "" "message {}"))
+  assertEqual
+    "emptyMessage"
+    (Message "Foo" [])
+    (fromRight failMessage (parse parseMessage "" "message Foo {}"))
+  assertEqual
+    "simple"
+    testMessage1Proto
+    (fromRight failMessage (parse parseMessage "" testMessage1))
+  assertEqual
+    "reserved"
+    testMessageReservedProto
+    (fromRight failMessage (parse parseMessage "" testMessageReserved))
+  assertEqual
+    "optional"
+    testOptionalProto
+    (fromRight failMessage (parse parseMessage "" testOptional))
+  assertEqual
+    "repeated"
+    testRepeatedProto
+    (fromRight failMessage (parse parseMessage "" testRepeated))
+  assertEqual
+    "reserved names"
+    testReservedNamesProto
+    (fromRight failMessage (parse parseMessage "" testReservedNames))
+  assertEqual
+    "oneof"
+    testOneOfProto
+    (fromRight failMessage (parse parseMessage "" testOneOf))
+  assertEqual
+    "field option"
+    testFieldOptionProto
+    (fromRight failMessage (parse parseMessage "" testFieldOption))

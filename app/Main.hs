@@ -17,9 +17,17 @@ parseOptions =
   Options
     <$> optional
       ( strOption
-          (long "file" <> short 'f' <> metavar "PATH" <> help "Specify file path to parse")
+          ( long "file"
+              <> short 'f'
+              <> metavar "PATH"
+              <> help "Specify file path to parse"
+          )
       )
-    <*> switch (long "pretty" <> short 'p' <> help "Enable pretty print")
+    <*> switch
+      ( long "pretty"
+          <> short 'p'
+          <> help "Enable pretty print"
+      )
     <*> many (argument str (metavar "STRING..."))
 
 main :: IO ()
@@ -45,7 +53,7 @@ processOptions (Options _ isPrettier otherArgs) =
 protoPrint :: Protobuf -> Bool -> IO ()
 protoPrint protobuf isPrettier =
   if not isPrettier
-    then putStrLn $ show protobuf
+    then print protobuf
     else
       putStrLn $
         renderString $

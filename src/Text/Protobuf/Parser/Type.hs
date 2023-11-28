@@ -57,7 +57,10 @@ parseMap =
             *> spaces'
             *> char '<'
             *> spaces'
-            *> (IntKey <$> parseIntType <|> StringKey <$> protoName)
+            *> ( IntKey
+                   <$> parseIntType
+                   <|> StringKey <$> protoName
+               )
         )
     <*> ( spaces'
             *> char ','

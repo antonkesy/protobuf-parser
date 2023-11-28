@@ -23,7 +23,16 @@ parseEnum' p = do
   return
     ( Text.Protobuf.Types.merge
         p
-        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [x], messages = [], services = []})
+        ( Protobuf
+            { syntax = Nothing,
+              package = Nothing,
+              imports = [],
+              options = [],
+              enums = [x],
+              messages = [],
+              services = []
+            }
+        )
     )
 
 parseEnum :: Parser Text.Protobuf.Types.Enum
@@ -54,7 +63,10 @@ parseEnumField =
     fieldNumber = spaces' *> char '=' *> spaces' *> enumNumber
     reservedValues =
       try (ReservedEnumNames <$> reservedNames)
-        <|> try (ReservedEnumNumbers <$> reservedNumbers enumNumber enumNumberRange)
+        <|> try
+          ( ReservedEnumNumbers
+              <$> reservedNumbers enumNumber enumNumberRange
+          )
     valueField =
       EnumValue
         <$> fieldName

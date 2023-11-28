@@ -15,7 +15,16 @@ parsePackage' p = do
       return
         ( Text.Protobuf.Types.merge
             p
-            (Protobuf {syntax = Nothing, package = Just package', imports = [], options = [], enums = [], messages = [], services = []})
+            ( Protobuf
+                { syntax = Nothing,
+                  package = Just package',
+                  imports = [],
+                  options = [],
+                  enums = [],
+                  messages = [],
+                  services = []
+                }
+            )
         )
 
 parsePackage :: Parser Package

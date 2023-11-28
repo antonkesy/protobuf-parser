@@ -71,8 +71,14 @@ multiplePackageText =
 
 testSplittedDefinitions :: Test
 testSplittedDefinitions = TestCase $ do
-  assertEqual "import - package - import" splitImportProto (fromRight defaultTestProto (parseProtobuf splitImportText))
-  assertEqual "import - message - import" splitImportProto1 (fromRight defaultTestProto (parseProtobuf splitImportText1))
+  assertEqual
+    "import - package - import"
+    splitImportProto
+    (fromRight defaultTestProto (parseProtobuf splitImportText))
+  assertEqual
+    "import - message - import"
+    splitImportProto1
+    (fromRight defaultTestProto (parseProtobuf splitImportText1))
 
 testText :: Test
 testText = TestCase $ do
@@ -85,7 +91,10 @@ testText = TestCase $ do
             \import \"bar.proto\";"
         )
     )
-  assertEqual "multiple package" False (isRight (parseProtobuf multiplePackageText))
+  assertEqual
+    "multiple package"
+    False
+    (isRight (parseProtobuf multiplePackageText))
 
 textComment :: Protobuf
 textComment =
@@ -128,7 +137,19 @@ testComment4 =
 
 testComments :: Test
 testComments = TestCase $ do
-  assertEqual "whole line 1" textComment (fromRight defaultTestProto (parseProtobuf testComment1))
-  assertEqual "whole line 1" textComment (fromRight defaultTestProto (parseProtobuf testComment2))
-  assertEqual "in-line" textComment (fromRight defaultTestProto (parseProtobuf testComment3))
-  assertEqual "multi in-line" textComment (fromRight defaultTestProto (parseProtobuf testComment4))
+  assertEqual
+    "whole line 1"
+    textComment
+    (fromRight defaultTestProto (parseProtobuf testComment1))
+  assertEqual
+    "whole line 1"
+    textComment
+    (fromRight defaultTestProto (parseProtobuf testComment2))
+  assertEqual
+    "in-line"
+    textComment
+    (fromRight defaultTestProto (parseProtobuf testComment3))
+  assertEqual
+    "multi in-line"
+    textComment
+    (fromRight defaultTestProto (parseProtobuf testComment4))

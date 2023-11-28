@@ -15,7 +15,16 @@ parseMessage' p = do
   return
     ( Text.Protobuf.Types.merge
         p
-        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [], enums = [], messages = [x], services = []})
+        ( Protobuf
+            { syntax = Nothing,
+              package = Nothing,
+              imports = [],
+              options = [],
+              enums = [],
+              messages = [x],
+              services = []
+            }
+        )
     )
 
 parseMessage :: Parser Message
@@ -59,7 +68,10 @@ parseMessageField =
 
     reservedValues =
       try (ReservedMessageNames <$> reservedNames)
-        <|> try (ReservedMessageNumbers <$> reservedNumbers protoNumber fieldNumberRange)
+        <|> try
+          ( ReservedMessageNumbers
+              <$> reservedNumbers protoNumber fieldNumberRange
+          )
     implicitField =
       ImplicitMessageField
         <$> (try parseDataType <|> try parseMap)
@@ -106,5 +118,8 @@ parseMessageField =
             )
 
 fieldNumberRange :: Parser FieldNumber
-fieldNumberRange = do
-  protoNumber <|> try (string "min" >> return 1) <|> try (string "max" >> return 0xFFFFFFFF)
+fieldNumberRange =
+  do
+    protoNumber
+    <|> try (string "min" >> return 1)
+    <|> try (string "max" >> return 0xFFFFFFFF)

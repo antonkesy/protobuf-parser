@@ -10,8 +10,10 @@ allTests =
   [TestLabel "fileTest" testFiles]
 
 getResult :: FilePath -> IO Protobuf
-getResult fileNameWithoutExtension = do
-  fromRight emptyProtobuf <$> parseProtoFile ("test/E2E/protofiles/" ++ fileNameWithoutExtension ++ ".proto")
+getResult fileNameWithoutExtension =
+  do
+    fromRight emptyProtobuf
+    <$> parseProtoFile ("test/E2E/protofiles/" ++ fileNameWithoutExtension ++ ".proto")
 
 assertProtoFile :: FilePath -> Protobuf -> Assertion
 assertProtoFile fileNameWithoutExtension expected = do
@@ -31,8 +33,16 @@ testFiles = TestCase $ do
           messages =
             [ Message
                 "SearchRequest"
-                [ ImplicitMessageField (Scalar (IntType Int32)) "page_number" 2 [],
-                  ImplicitMessageField (Scalar (FloatType Double)) "results_per_page" 3 []
+                [ ImplicitMessageField
+                    (Scalar (IntType Int32))
+                    "page_number"
+                    2
+                    [],
+                  ImplicitMessageField
+                    (Scalar (FloatType Double))
+                    "results_per_page"
+                    3
+                    []
                 ]
             ],
           services = []
@@ -49,12 +59,24 @@ testFiles = TestCase $ do
           messages =
             [ Message
                 "SearchRequest"
-                [ ImplicitMessageField (Scalar (IntType Int32)) "page_number" 2 [],
-                  ImplicitMessageField (Scalar (FloatType Double)) "results_per_page" 3 []
+                [ ImplicitMessageField
+                    (Scalar (IntType Int32))
+                    "page_number"
+                    2
+                    [],
+                  ImplicitMessageField
+                    (Scalar (FloatType Double))
+                    "results_per_page"
+                    3
+                    []
                 ],
               Message
                 "SearchResponse"
-                [ ImplicitMessageField (Scalar StringType) "name" 1 []
+                [ ImplicitMessageField
+                    (Scalar StringType)
+                    "name"
+                    1
+                    []
                 ]
             ],
           services = []
@@ -71,8 +93,14 @@ testFiles = TestCase $ do
             [ Text.Protobuf.Types.Enum
                 "Data"
                 [ EnumValue "DATA_UNSPECIFIED" 0 [],
-                  EnumValue "DATA_SEARCH" 1 [FieldOption "deprecated" (BoolValue True)],
-                  EnumValue "DATA_DISPLAY" 2 [FieldOption "(string_name)" (StringValue "display_value")]
+                  EnumValue
+                    "DATA_SEARCH"
+                    1
+                    [FieldOption "deprecated" (BoolValue True)],
+                  EnumValue
+                    "DATA_DISPLAY"
+                    2
+                    [FieldOption "(string_name)" (StringValue "display_value")]
                 ]
             ],
           messages = [],

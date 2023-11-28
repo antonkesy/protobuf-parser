@@ -11,7 +11,16 @@ parseImport' p = do
   return
     ( Text.Protobuf.Types.merge
         p
-        (Protobuf {syntax = Nothing, package = Nothing, imports = [imp], options = [], enums = [], messages = [], services = []})
+        ( Protobuf
+            { syntax = Nothing,
+              package = Nothing,
+              imports = [imp],
+              options = [],
+              enums = [],
+              messages = [],
+              services = []
+            }
+        )
     )
 
 pathExtension :: String
@@ -23,6 +32,8 @@ parseImport =
     *> (string "import" <?> "Expected import keyword")
     *> spaces1
     *> (char '"' <?> "Expected '\"' after import keyword")
-    *> ((++ pathExtension) <$> (anyChar `manyTill` string (pathExtension ++ "\"")))
+    *> ( (++ pathExtension)
+           <$> (anyChar `manyTill` string (pathExtension ++ "\""))
+       )
     <* spaces'
     <* char ';'

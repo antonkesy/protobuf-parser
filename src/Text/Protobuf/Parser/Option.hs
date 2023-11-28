@@ -12,7 +12,16 @@ parseOption' p = do
   return
     ( Text.Protobuf.Types.merge
         p
-        (Protobuf {syntax = Nothing, package = Nothing, imports = [], options = [opt], enums = [], messages = [], services = []})
+        ( Protobuf
+            { syntax = Nothing,
+              package = Nothing,
+              imports = [],
+              options = [opt],
+              enums = [],
+              messages = [],
+              services = []
+            }
+        )
     )
 
 parseOption :: Parser Option
