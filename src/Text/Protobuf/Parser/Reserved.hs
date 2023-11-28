@@ -6,8 +6,8 @@ where
 import Text.Parsec
 import Text.Parsec.String
 import Text.Protobuf.Parser.Space (spaces')
-import Text.Protobuf.Types
 import Text.Protobuf.Parser.Type
+import Text.Protobuf.Types
 
 reservedNames :: Parser ReservedNames
 reservedNames =

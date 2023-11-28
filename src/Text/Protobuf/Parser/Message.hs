@@ -11,7 +11,6 @@ import Text.Protobuf.Types
 parseMessage' :: Protobuf -> Parser Protobuf
 parseMessage' p = do
   x <- parseMessage
-  -- TODO: check for validity of message?
   return
     ( Text.Protobuf.Types.merge
         p
