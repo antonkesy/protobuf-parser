@@ -53,11 +53,23 @@ parseEnum =
         )
   where
     name = protoName
-    fields = try parseEnumField `sepEndBy1` char ';'
+    fields = many1 (try parseEnumField)
 
 parseEnumField :: Parser EnumField
 parseEnumField =
-  spaces' *> (try reservedField <|> try optionField <|> try valueField)
+  spaces'
+    *> ( try
+           ( reservedField
+               <* spaces'
+               <* char ';'
+           )
+           <|> try optionField
+           <|> try
+             ( valueField
+                 <* spaces'
+                 <* char ';'
+             )
+       )
   where
     fieldName = spaces' *> protoName
     fieldNumber = spaces' *> char '=' *> spaces' *> enumNumber
@@ -75,7 +87,10 @@ parseEnumField =
     optionField = EnumOption <$> parseOption
     reservedField =
       EnumReserved
-        <$> (string "reserved" *> spaces' *> reservedValues)
+        <$> ( string "reserved"
+                *> spaces'
+                *> reservedValues
+            )
 
 enumNumber :: Parser EnumNumber
 enumNumber =
