@@ -47,6 +47,13 @@ testImport = TestCase $ do
         testOption
         (parse parseOption "" "option optimize_for = SPEED;")
     )
+  assertEqual
+    "allow alias"
+    (Option "allow_alias" (BoolValue True))
+    ( fromRight
+        testOption
+        (parse parseOption "" "option allow_alias = true;")
+    )
 
 testDefaultFieldOption :: [FieldOption]
 testDefaultFieldOption = [FieldOption "test" (StringValue "fail")]
