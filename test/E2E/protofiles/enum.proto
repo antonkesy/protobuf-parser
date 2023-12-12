@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 enum Data {
+  option allow_alias = true;
+  reserved 2, 15, 9 to 11, 4294967294 to max;
   DATA_UNSPECIFIED = 0;
   DATA_SEARCH = 1 [deprecated = true];
   DATA_DISPLAY = 2 [
