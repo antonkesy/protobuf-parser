@@ -27,7 +27,7 @@ reservedNumbers single range =
     numbers =
       try
         ( (\l r -> [l .. r])
-            <$> range
+            <$> (spaces' *> range)
             <* spaces'
             <* string "to"
             <* spaces'

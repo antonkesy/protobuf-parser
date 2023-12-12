@@ -87,6 +87,10 @@ testEnumFieldParser = TestCase $ do
     "singleReserved"
     (EnumReserved (ReservedEnumNumbers [1]))
     (fromRight emptyDefault (parse parseEnumField "" "reserved 1;"))
+  assertEqual
+    "uneven reserved single numbers before range"
+    (EnumReserved (ReservedEnumNumbers [2, 15, 9, 10, 11, 4294967294, 0xFFFFFFFF]))
+    (fromRight emptyDefault (parse parseEnumField "" "reserved 2, 15, 9 to 11, 4294967294 to max;"))
   -- reserved name --
   assertEqual
     "emptyReservedName"

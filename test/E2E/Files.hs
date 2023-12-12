@@ -93,7 +93,17 @@ testFiles = TestCase $ do
             [ Text.Protobuf.Types.Enum
                 "Data"
                 [ EnumOption (Option "allow_alias" (BoolValue True)),
-                  EnumReserved (ReservedEnumNumbers [1, 2, 3]),
+                  EnumReserved
+                    ( ReservedEnumNumbers
+                        [ 2,
+                          15,
+                          9,
+                          10,
+                          11,
+                          4294967294,
+                          4294967295
+                        ]
+                    ),
                   EnumValue "DATA_UNSPECIFIED" 0 [],
                   EnumValue
                     "DATA_SEARCH"
