@@ -57,14 +57,14 @@ Therefore, not all features are complete or correct:
 
 - Only proto3 syntax is supported
 - Not all values are check for correctness
-- Base Lexical Elements do not strictly follow the [offical spec](https://protobuf.dev/reference/protobuf/proto3-spec/#lexical_elements)
+- Base Lexical Elements do not strictly follow the [official spec](https://protobuf.dev/reference/protobuf/proto3-spec/#lexical_elements)
 - Proto 3 Ranges do not allow the keyword "min"
 - Empty statements are missing
 - Import weak and public are missing
 
 ## Grammar
 
-The correct and complete Grammar can be found at the [offical Protocol Buffers Version 3 Language Specification](https://protobuf.dev/reference/protobuf/proto3-spec/)
+The correct and complete Grammar can be found at the [official Protocol Buffers Version 3 Language Specification](https://protobuf.dev/reference/protobuf/proto3-spec/)
 
 Following is basic syntax in Extended Backus-Naur Form (EBNF):
 
