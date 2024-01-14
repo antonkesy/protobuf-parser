@@ -4,7 +4,6 @@ module Text.Protobuf.Parser
   )
 where
 
-import System.IO
 import Text.Parsec
 import Text.Parsec.String
 import Text.Protobuf.Parser.Comment
@@ -22,9 +21,7 @@ parseProtobuf = parse protoValue ""
 
 parseProtoFile :: FilePath -> IO (Either ParseError Protobuf)
 parseProtoFile filePath = do
-  handle <- openFile filePath ReadMode
-  contents <- hGetContents handle
-  -- hClose handle
+  contents <- readFile filePath
   return (parse protoValue filePath contents)
 
 protoValue :: Parser Protobuf
