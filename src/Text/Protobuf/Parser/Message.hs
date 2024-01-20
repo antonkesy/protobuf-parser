@@ -28,10 +28,7 @@ parseMessage' p = do
     )
 
 parseMessage :: Parser Message
-parseMessage = parseMessage''
-
-parseMessage'' :: Parser Message
-parseMessage'' =
+parseMessage =
   Message
     <$> ( spaces'
             *> string "message"
@@ -57,7 +54,7 @@ parseMessageField =
            <|> try oneofField
            <|> (OptionMessageField <$> try parseOption <* fieldSeparator)
            <|> (EnumMessageField <$> try parseEnum)
-           <|> (NestedMessage <$> try parseMessage'')
+           <|> (NestedMessage <$> try parseMessage)
        )
   where
     fieldName = spaces' *> protoName
