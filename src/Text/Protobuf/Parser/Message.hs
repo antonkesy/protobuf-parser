@@ -41,30 +41,30 @@ parseMessage'' =
     <*> ( spaces'
             *> char '{'
             *> spaces'
-            *> fields
+            *> many parseMessageField
             <* spaces'
             <* char '}'
             <* spaces'
         )
-  where
-    fields = try parseMessageField `sepEndBy` char ';'
 
 parseMessageField :: Parser MessageField
 parseMessageField =
   spaces'
-    *> ( try implicitField
-           <|> try optionalField
-           <|> try repeatedField
-           <|> try reservedField
+    *> ( try implicitField <* fieldSeparator
+           <|> try (optionalField <* fieldSeparator)
+           <|> try (repeatedField <* fieldSeparator)
+           <|> try (reservedField <* fieldSeparator)
            <|> try oneofField
-           <|> (OptionMessageField <$> try parseOption)
+           <|> (OptionMessageField <$> try parseOption <* fieldSeparator)
            <|> (EnumMessageField <$> try parseEnum)
+           <|> (NestedMessage <$> try parseMessage'')
        )
   where
     fieldName = spaces' *> protoName
     fieldNumber = spaces' *> char '=' *> spaces' *> protoNumber
-    fields = try parseMessageField `sepEndBy` char ';'
+    fields = try (many parseMessageField)
     fieldOptions = try parseFieldOption <|> return []
+    fieldSeparator = spaces' *> char ';' *> spaces'
 
     reservedValues =
       try (ReservedMessageNames <$> reservedNames)

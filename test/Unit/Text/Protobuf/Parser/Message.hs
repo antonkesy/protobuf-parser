@@ -117,6 +117,23 @@ testFieldOptionProto =
         [FieldOption "default" (BoolValue True)]
     ]
 
+testNestedMessage :: String
+testNestedMessage =
+  "message Foo {\
+  \message Bar {\
+  \int32 foo = 1;\
+  \}\
+  \Bar bar = 1;\
+  \}"
+
+testNestedMessagesProto :: Message
+testNestedMessagesProto =
+  Message
+    "Foo"
+    [ NestedMessage (Message "Bar" [ImplicitMessageField (Scalar (IntType Int32)) "foo" 1 []]),
+      ImplicitMessageField (Compound "Bar") "bar" 1 []
+    ]
+
 testSimple :: Test
 testSimple = TestCase $ do
   assertEqual
@@ -163,3 +180,7 @@ testSimple = TestCase $ do
     "field option"
     testFieldOptionProto
     (fromRight failMessage (parse parseMessage "" testFieldOption))
+  assertEqual
+    "embedded message"
+    testNestedMessagesProto
+    (fromRight failMessage (parse parseMessage "" testNestedMessage))

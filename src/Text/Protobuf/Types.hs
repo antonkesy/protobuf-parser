@@ -86,6 +86,7 @@ data MessageField
   | OneOfMessageField Name [MessageField]
   | EnumMessageField Text.Protobuf.Types.Enum
   | OptionMessageField Option
+  | NestedMessage Message
   deriving (Show, Eq)
 
 data Message
@@ -316,6 +317,8 @@ instance Pretty MessageField where
     pretty option
   pretty (EnumMessageField enum) =
     pretty enum
+  pretty (NestedMessage msg) =
+    pretty msg
 
 instance Pretty MessageReservedValues where
   pretty (ReservedMessageNumbers numbers) =
